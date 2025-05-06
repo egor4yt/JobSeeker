@@ -48,7 +48,3 @@ You can contact me at:
 # Contributing
 
 Pull requests are welcome! Please open an issue first to discuss significant changes
-
-# License
-
-JobSeeker is released under the MIT License.
