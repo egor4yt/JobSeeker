@@ -12,7 +12,6 @@ namespace JobSeeker.WebScraper.MessageBroker.Configuration;
 
 public static class DependencyInjection
 {
-    /// <param name="builder">Web application instance reference</param>
     public static void ConfigureMessageBroker(this IHostApplicationBuilder builder)
     {
         ConfigureInfrastructure(builder.Services, builder.Configuration);

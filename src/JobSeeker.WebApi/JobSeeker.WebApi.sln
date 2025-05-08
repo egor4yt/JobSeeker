@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.WebApi.Api", "JobSeeker.WebApi.Api\JobSeeker.WebApi.Api.csproj", "{02217053-B9EF-4A32-B3C5-B9D1C9B6E7C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.WebApi.MessageBroker", "JobSeeker.WebApi.MessageBroker\JobSeeker.WebApi.MessageBroker.csproj", "{EC8EB65B-D927-4FCD-A554-D99C33FBF3A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.WebApi.Shared", "JobSeeker.WebApi.Shared\JobSeeker.WebApi.Shared.csproj", "{8CD2B3FA-553B-43CB-A248-B369462A9A7A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{02217053-B9EF-4A32-B3C5-B9D1C9B6E7C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02217053-B9EF-4A32-B3C5-B9D1C9B6E7C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02217053-B9EF-4A32-B3C5-B9D1C9B6E7C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02217053-B9EF-4A32-B3C5-B9D1C9B6E7C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC8EB65B-D927-4FCD-A554-D99C33FBF3A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC8EB65B-D927-4FCD-A554-D99C33FBF3A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC8EB65B-D927-4FCD-A554-D99C33FBF3A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC8EB65B-D927-4FCD-A554-D99C33FBF3A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CD2B3FA-553B-43CB-A248-B369462A9A7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CD2B3FA-553B-43CB-A248-B369462A9A7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CD2B3FA-553B-43CB-A248-B369462A9A7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CD2B3FA-553B-43CB-A248-B369462A9A7A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

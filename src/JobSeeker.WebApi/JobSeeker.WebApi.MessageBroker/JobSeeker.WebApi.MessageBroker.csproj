@@ -4,18 +4,17 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>JobSeeker.WebScraper.Application</RootNamespace>
     </PropertyGroup>
 
-
     <ItemGroup>
-        <PackageReference Include="MediatR" Version="12.5.0"/>
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.4"/>
+        <PackageReference Include="MassTransit" Version="8.4.0" />
+        <PackageReference Include="MassTransit.Kafka" Version="8.4.0" />
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.4"/>
+        <PackageReference Include="Serilog" Version="4.2.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Services\HeadHunter\"/>
+      <ProjectReference Include="..\JobSeeker.WebApi.Shared\JobSeeker.WebApi.Shared.csproj" />
     </ItemGroup>
 
 </Project>

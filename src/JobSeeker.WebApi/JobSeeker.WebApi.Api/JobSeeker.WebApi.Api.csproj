@@ -4,21 +4,20 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <RootNamespace>JobSeeker.WebScraper.Api</RootNamespace>
+        <RootNamespace>JobSeeker.WebApi.Api</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.Playwright" Version="1.52.0"/>
         <PackageReference Include="Serilog" Version="4.2.0"/>
         <PackageReference Include="Serilog.Enrichers.Context" Version="4.6.5"/>
+        <PackageReference Include="Serilog.Extensions.Hosting" Version="9.0.0" />
         <PackageReference Include="Serilog.Formatting.Compact" Version="3.0.0"/>
         <PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0"/>
         <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\JobSeeker.WebScraper.Application\JobSeeker.WebScraper.Application.csproj"/>
-        <ProjectReference Include="..\JobSeeker.WebScraper.MessageBroker\JobSeeker.WebScraper.MessageBroker.csproj"/>
+      <ProjectReference Include="..\JobSeeker.WebApi.MessageBroker\JobSeeker.WebApi.MessageBroker.csproj" />
     </ItemGroup>
 
 </Project>
