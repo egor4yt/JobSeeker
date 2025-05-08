@@ -8,7 +8,7 @@ public static class DependencyInjection
     {
         app.Logging.ClearProviders();
         app.Logging.AddSerilog();
-        
+
 
         Log.Logger = new LoggerConfiguration()
             .Enrich.FromLogContext()

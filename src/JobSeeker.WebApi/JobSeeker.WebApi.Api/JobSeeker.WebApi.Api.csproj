@@ -10,14 +10,14 @@
     <ItemGroup>
         <PackageReference Include="Serilog" Version="4.2.0"/>
         <PackageReference Include="Serilog.Enrichers.Context" Version="4.6.5"/>
-        <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.0" />
+        <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.0"/>
         <PackageReference Include="Serilog.Formatting.Compact" Version="3.0.0"/>
         <PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0"/>
         <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\JobSeeker.WebApi.MessageBroker\JobSeeker.WebApi.MessageBroker.csproj" />
+        <ProjectReference Include="..\JobSeeker.WebApi.MessageBroker\JobSeeker.WebApi.MessageBroker.csproj"/>
     </ItemGroup>
 
 </Project>

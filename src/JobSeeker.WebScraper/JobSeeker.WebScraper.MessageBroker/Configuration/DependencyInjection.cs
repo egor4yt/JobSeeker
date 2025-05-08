@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Confluent.Kafka;
+﻿using JobSeeker.WebScraper.MessageBroker.Producers;
 using JobSeeker.WebScraper.Shared;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
@@ -22,34 +21,19 @@ public static class DependencyInjection
         {
             configurator.SetKebabCaseEndpointNameFormatter();
 
+            var connectionString = configuration.GetSection(ConfigurationKeys.KafkaConnectionString);
+            if (string.IsNullOrWhiteSpace(connectionString.Value))
+            {
+                Log.Warning("Message broker disabled: environment variable '{ConnectionString}' was null", ConfigurationKeys.KafkaConnectionString);
+                return;
+            }
+
             var messageBroker = configuration.GetSection(ConfigurationKeys.MessageBroker);
             switch (messageBroker.Value)
             {
                 case "kafka":
-                    var connectionString = configuration.GetSection(ConfigurationKeys.KafkaConnectionString);
-                    if (string.IsNullOrWhiteSpace(connectionString.Value)) Log.Warning("Message broker disabled: environment variable '{ConnectionString}' was null", ConfigurationKeys.KafkaConnectionString);
-
-                    configurator.UsingInMemory();
-
-                    configurator.AddRider(rider =>
-                    {
-                        var currentAssembly = Assembly.GetExecutingAssembly();
-                        rider.AddConsumers(currentAssembly);
-
-                        rider.UsingKafka((context, kafkaConfig) =>
-                        {
-                            kafkaConfig.Host(connectionString.Value);
-
-                            kafkaConfig.TopicEndpoint<Null, Messages.HealthCheck.Perform>("health-check-perform", "health-check-perform-group", e =>
-                            {
-                                e.CheckpointMessageCount = 5;
-                                e.CheckpointInterval = TimeSpan.FromSeconds(1);
-                                e.AutoOffsetReset = AutoOffsetReset.Earliest;
-                                e.ConfigureConsumer<Consumers.HealthCheck.Perform>(context);
-                            });
-                        });
-                    });
-
+                    configurator.UsingKafka(connectionString.Value);
+                    services.AddScoped(typeof(IMessageProducer<>), typeof(KafkaMessageProducer<>));
                     break;
                 default:
                     Log.Warning("Message broker disabled: unsupported message broker '{MessageBroker}'", messageBroker.Value);

@@ -7,8 +7,6 @@ public class Perform(ILogger<Perform> logger) : IConsumer<Messages.HealthCheck.P
 {
     public async Task Consume(ConsumeContext<Messages.HealthCheck.Perform> context)
     {
-        var wait = new Random().Next(3000, 6000);
-        logger.LogWarning("Consuming warning {Message}. Wait for: {Wait}", context.Message.Message, wait);
-        await Task.Delay(TimeSpan.FromMilliseconds(wait));
+        logger.LogDebug("Health-check performed");
     }
 }
