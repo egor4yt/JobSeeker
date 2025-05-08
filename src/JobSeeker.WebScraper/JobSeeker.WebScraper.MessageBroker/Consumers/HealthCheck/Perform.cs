@@ -7,6 +7,6 @@ public class Perform(ILogger<Perform> logger) : IConsumer<Messages.HealthCheck.P
 {
     public async Task Consume(ConsumeContext<Messages.HealthCheck.Perform> context)
     {
-        logger.LogDebug("Health-check performed");
+        logger.LogDebug("Health-check performed, message: '{Message}'", context.Message.Message);
     }
 }
