@@ -1,4 +1,4 @@
-namespace JobSeeker.WebApi.MessageBroker.Messages.HealthCheck;
+﻿namespace JobSeeker.WebScraper.MessageBroker.Messages.HealthCheck;
 
 public class Perform
 {

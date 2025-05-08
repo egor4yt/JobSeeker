@@ -1,8 +1,7 @@
-﻿using System.Net;
+﻿using System.Reflection;
 using Confluent.Kafka;
-using JobSeeker.WebScraper.MessageBroker.Providers.Base;
-using JobSeeker.WebScraper.MessageBroker.Providers.Kafka;
 using JobSeeker.WebScraper.Shared;
+using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -19,46 +18,43 @@ public static class DependencyInjection
 
     private static void ConfigureInfrastructure(IServiceCollection services, IConfiguration configuration)
     {
-        var messageBroker = configuration.GetSection(ConfigurationKeys.MessageBroker);
-        switch (messageBroker.Value)
+        services.AddMassTransit(configurator =>
         {
-            case "kafka":
-                var connectionString = configuration.GetSection(ConfigurationKeys.KafkaConnectionString);
-                if (string.IsNullOrWhiteSpace(connectionString.Value))
-                {
-                    Log.Warning("Message broker disabled: environment variable '{ConnectionString}' was null", ConfigurationKeys.KafkaConnectionString);
+            configurator.SetKebabCaseEndpointNameFormatter();
+
+            var messageBroker = configuration.GetSection(ConfigurationKeys.MessageBroker);
+            switch (messageBroker.Value)
+            {
+                case "kafka":
+                    var connectionString = configuration.GetSection(ConfigurationKeys.KafkaConnectionString);
+                    if (string.IsNullOrWhiteSpace(connectionString.Value)) Log.Warning("Message broker disabled: environment variable '{ConnectionString}' was null", ConfigurationKeys.KafkaConnectionString);
+
+                    configurator.UsingInMemory();
+
+                    configurator.AddRider(rider =>
+                    {
+                        var currentAssembly = Assembly.GetExecutingAssembly();
+                        rider.AddConsumers(currentAssembly);
+
+                        rider.UsingKafka((context, kafkaConfig) =>
+                        {
+                            kafkaConfig.Host(connectionString.Value);
+
+                            kafkaConfig.TopicEndpoint<Null, Messages.HealthCheck.Perform>("health-check-perform", "health-check-perform-group", e =>
+                            {
+                                e.CheckpointMessageCount = 5;
+                                e.CheckpointInterval = TimeSpan.FromSeconds(1);
+                                e.AutoOffsetReset = AutoOffsetReset.Earliest;
+                                e.ConfigureConsumer<Consumers.HealthCheck.Perform>(context);
+                            });
+                        });
+                    });
+
                     break;
-                }
-
-                var producerConfig = new ProducerConfig
-                {
-                    BootstrapServers = connectionString.Value,
-                    ClientId = Dns.GetHostName(),
-                    AllowAutoCreateTopics = true,
-                    Acks = Acks.All,
-                    EnableIdempotence = true,
-                    MaxInFlight = 5
-                };
-                services.AddSingleton(producerConfig);
-
-                var consumerConfig = new ConsumerConfig
-                {
-                    BootstrapServers = connectionString.Value,
-                    GroupId = "web-scraper",
-                    ClientId = Dns.GetHostName(),
-                    AutoOffsetReset = AutoOffsetReset.Earliest,
-                    EnableAutoCommit = false,
-                    EnableAutoOffsetStore = false
-                };
-
-                services.AddSingleton(consumerConfig);
-
-                services.AddSingleton<IMessageProducer, KafkaMessageProducer>();
-                services.AddHostedService<KafkaMessageConsumer>();
-                break;
-            default:
-                Log.Warning("Message broker disabled: unsupported message broker '{MessageBroker}'", messageBroker.Value);
-                break;
-        }
+                default:
+                    Log.Warning("Message broker disabled: unsupported message broker '{MessageBroker}'", messageBroker.Value);
+                    break;
+            }
+        });
     }
 }

@@ -4,9 +4,9 @@ using Microsoft.Extensions.Logging;
 
 namespace JobSeeker.WebApi.MessageBroker.Consumers.HealthCheck;
 
-public class PerformConsumer(ILogger<PerformConsumer> logger) : IConsumer<Messages.HealthCheck.Perform>
+public class Perform(ILogger<Perform> logger) : IConsumer<Messages.HealthCheck.Perform>
 {
-    public async Task Consume(ConsumeContext<Perform> context)
+    public async Task Consume(ConsumeContext<Messages.HealthCheck.Perform> context)
     {
         var wait = new Random().Next(3000, 6000);
         logger.LogWarning("Consuming warning {Message}. Wait for: {Wait}", context.Message.Message, wait);

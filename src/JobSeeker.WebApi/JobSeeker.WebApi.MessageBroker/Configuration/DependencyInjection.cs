@@ -45,7 +45,7 @@ public static class DependencyInjection
                                 e.CheckpointMessageCount = 5;
                                 e.CheckpointInterval = TimeSpan.FromSeconds(1);
                                 e.AutoOffsetReset = AutoOffsetReset.Earliest;
-                                e.ConfigureConsumer<Consumers.HealthCheck.PerformConsumer>(context);
+                                e.ConfigureConsumer<Consumers.HealthCheck.Perform>(context);
                             });
                         });
                     });
