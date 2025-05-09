@@ -2,5 +2,5 @@
 
 public abstract class JobParameter : IJobParameter
 {
-    public Guid JobId { get; init; } = Guid.NewGuid();
+    public required Guid JobId { get; init; }
 }

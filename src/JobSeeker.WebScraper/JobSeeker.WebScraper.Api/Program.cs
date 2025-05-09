@@ -1,5 +1,8 @@
+using Hangfire;
 using JobSeeker.WebScraper.Api.Configuration;
 using JobSeeker.WebScraper.Application.Configuration;
+using JobSeeker.WebScraper.Application.JobParameters.Common;
+using JobSeeker.WebScraper.Application.Services.JobRunner;
 using JobSeeker.WebScraper.MessageBroker.Configuration;
 using Serilog;
 
@@ -11,6 +14,19 @@ try
     builder.ConfigureApplication();
 
     var app = builder.Build();
+    app.UseHangfireDashboard();
+
+    // Temporary solution for local development
+#if DEBUG
+    var job = new ParseSearchResultsLinks
+    {
+        BaseSearchUrl = "https://hh.ru/search/vacancy",
+        JobId = Guid.NewGuid()
+    };
+
+    var jobManager = app.Services.CreateScope().ServiceProvider.GetRequiredService<IBackgroundJobClient>();
+    jobManager.Enqueue<JobRunnerService>(x => x.RunAsync(job, CancellationToken.None));
+#endif
 
     var appUrls = builder.Configuration["applicationUrl"]?.Split(';')
                   ?? builder.Configuration.GetValue<string>("urls")?.Split(';')
@@ -18,7 +34,7 @@ try
 
     Log.Information("Application listening on {Addresses}", appUrls);
 
-    app.Run(); 
+    app.Run();
 }
 catch (Exception ex)
 {
