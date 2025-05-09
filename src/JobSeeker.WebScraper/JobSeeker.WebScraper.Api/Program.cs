@@ -18,7 +18,7 @@ try
 
     Log.Information("Application listening on {Addresses}", appUrls);
 
-    app.Run();
+    app.Run(); 
 }
 catch (Exception ex)
 {
