@@ -1,9 +1,11 @@
 ﻿using JobSeeker.WebScraper.Application.Jobs.Base;
+using JobSeeker.WebScraper.Persistence;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace JobSeeker.WebScraper.Application.Jobs.Common.ParseSearchResultsLinks;
 
-public class ParseSearchResultsLinksJob(ILogger<ParseSearchResultsLinksJob> logger) : IJob<JobParameters.Common.ParseSearchResultsLinks>
+public class ParseSearchResultsLinksJob(ILogger<ParseSearchResultsLinksJob> logger, ApplicationDbContext dbContext) : IJob<JobParameters.Common.ParseSearchResultsLinks>
 {
     private CancellationToken _cancellationToken = CancellationToken.None;
     private JobParameters.Common.ParseSearchResultsLinks _parameter = null!;
@@ -13,20 +15,26 @@ public class ParseSearchResultsLinksJob(ILogger<ParseSearchResultsLinksJob> logg
         _parameter = parameter;
         _cancellationToken = cancellationToken;
 
-        var uri = new Uri(_parameter.BaseSearchUrl);
-        var host = uri.Host.ToLower().Trim();
-
-        logger.LogInformation("Started parsing search results links job for host {Host}", host);
+        logger.LogInformation("Started parsing search results links job for scrap task {ScrapTaskId}", _parameter.ScrapTaskId);
 
         var results = await RunAsync();
         await SaveResultsAsync(results);
 
-        logger.LogInformation("Finished parsing search results links job for host {Host}", host);
+        logger.LogInformation("Finished parsing search results links job for scrap task {ScrapTaskId}", _parameter.ScrapTaskId);
     }
 
     private async Task<List<object>> RunAsync()
     {
-        await Task.Delay(1000, _cancellationToken);
+        var scrapTask = await dbContext.ScrapTasks
+            .Include(x => x.ScrapSources)
+            .SingleAsync(x => x.Id == _parameter.ScrapTaskId, _cancellationToken);
+
+        foreach (var scrapSource in scrapTask.ScrapSources)
+        {
+            logger.LogInformation("Trying to parse search results links for {SearchText} on {Domain}", scrapTask.SearchText, scrapSource.Domain);
+            await Task.Delay(1000, _cancellationToken);
+        }
+
         return [];
     }
 

@@ -21,4 +21,9 @@
         <Folder Include="Jobs\Recurring\"/>
     </ItemGroup>
 
+
+    <ItemGroup>
+        <ProjectReference Include="..\JobSeeker.WebScraper.Persistence\JobSeeker.WebScraper.Persistence.csproj"/>
+    </ItemGroup>
+
 </Project>

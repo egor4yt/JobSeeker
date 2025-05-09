@@ -1,6 +1,6 @@
-﻿using System.Reflection;
-using Hangfire;
+﻿using Hangfire;
 using Hangfire.MemoryStorage;
+using JobSeeker.WebScraper.Application.Commands.Base;
 using JobSeeker.WebScraper.Application.Jobs.Base;
 using JobSeeker.WebScraper.Application.Services.JobRunner;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,6 +13,7 @@ public static class DependencyInjection
     public static void ConfigureApplication(this IHostApplicationBuilder app)
     {
         ConfigureInfrastructure(app.Services);
+        AddCommands(app.Services);
         AddJobs(app.Services);
     }
 
@@ -28,19 +29,47 @@ public static class DependencyInjection
         services.AddHangfireServer();
     }
 
-    private static void AddJobs(IServiceCollection services)
+    private static void AddCommands(IServiceCollection services)
     {
-        var types = Assembly.GetExecutingAssembly().GetExportedTypes()
+        var commandHandlerType = typeof(ICommandHandler<>);
+
+        var types = commandHandlerType.Assembly.GetExportedTypes()
             .Where(t => t
                 .GetInterfaces()
                 .Any(i =>
                     i.IsGenericType &&
-                    i.GetGenericTypeDefinition() == typeof(IJob<>)
+                    i.GetGenericTypeDefinition() == commandHandlerType
                 ))
             .Select(t => new
             {
                 Implementation = t,
-                ServiceType = t.GetInterfaces().Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IJob<>)).Take(2).ToList()
+                ServiceType = t.GetInterfaces().Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == commandHandlerType).Take(2).ToList()
+            });
+
+        foreach (var type in types)
+        {
+            if (type.ServiceType.Count > 1) throw new Exception("Too many command interfaces");
+            services.AddTransient(type.ServiceType[0], type.Implementation);
+        }
+
+        services.AddSingleton<JobRunnerService>();
+    }
+
+    private static void AddJobs(IServiceCollection services)
+    {
+        var jobInterfaceType = typeof(IJob<>);
+
+        var types = jobInterfaceType.Assembly.GetExportedTypes()
+            .Where(t => t
+                .GetInterfaces()
+                .Any(i =>
+                    i.IsGenericType &&
+                    i.GetGenericTypeDefinition() == jobInterfaceType
+                ))
+            .Select(t => new
+            {
+                Implementation = t,
+                ServiceType = t.GetInterfaces().Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == jobInterfaceType).Take(2).ToList()
             });
 
         foreach (var type in types)

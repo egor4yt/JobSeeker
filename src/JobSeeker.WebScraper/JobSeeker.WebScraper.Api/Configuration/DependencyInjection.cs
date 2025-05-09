@@ -12,7 +12,6 @@ public static class DependencyInjection
 
         Log.Logger = new LoggerConfiguration()
             .Enrich.FromLogContext()
-            .Enrich.WithMachineName()
             .ReadFrom.Configuration(app.Configuration)
             .CreateLogger();
     }

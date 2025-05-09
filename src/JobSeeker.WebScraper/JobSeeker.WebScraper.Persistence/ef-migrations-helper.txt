@@ -1,0 +1,7 @@
+﻿dotnet ef migrations add Message --project JobSeeker.WebScraper.Persistence --startup-project JobSeeker.WebScraper.Api
+
+dotnet ef database update --project JobSeeker.WebScraper.Persistence --startup-project JobSeeker.WebScraper.Api
+
+dotnet ef database drop --project JobSeeker.WebScraper.Persistence --startup-project JobSeeker.WebScraper.Api
+
+dotnet ef migrations remove --project JobSeeker.WebScraper.Persistence --startup-project JobSeeker.WebScraper.Api

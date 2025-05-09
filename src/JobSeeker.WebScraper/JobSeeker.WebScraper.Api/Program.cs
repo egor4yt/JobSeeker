@@ -1,9 +1,8 @@
 using Hangfire;
 using JobSeeker.WebScraper.Api.Configuration;
 using JobSeeker.WebScraper.Application.Configuration;
-using JobSeeker.WebScraper.Application.JobParameters.Common;
-using JobSeeker.WebScraper.Application.Services.JobRunner;
 using JobSeeker.WebScraper.MessageBroker.Configuration;
+using JobSeeker.WebScraper.Persistence.Configuration;
 using Serilog;
 
 try
@@ -12,21 +11,11 @@ try
     builder.ConfigureLogging();
     builder.ConfigureMessageBroker();
     builder.ConfigureApplication();
+    builder.ConfigurePersistence();
 
     var app = builder.Build();
     app.UseHangfireDashboard();
-
-    // Temporary solution for local development
-#if DEBUG
-    var job = new ParseSearchResultsLinks
-    {
-        BaseSearchUrl = "https://hh.ru/search/vacancy",
-        JobId = Guid.NewGuid()
-    };
-
-    var jobManager = app.Services.CreateScope().ServiceProvider.GetRequiredService<IBackgroundJobClient>();
-    jobManager.Enqueue<JobRunnerService>(x => x.RunAsync(job, CancellationToken.None));
-#endif
+    app.UseInitializeDatabase();
 
     var appUrls = builder.Configuration["applicationUrl"]?.Split(';')
                   ?? builder.Configuration.GetValue<string>("urls")?.Split(';')
@@ -36,7 +25,7 @@ try
 
     app.Run();
 }
-catch (Exception ex)
+catch (Exception ex) when (ex is not HostAbortedException && ex.Source != "Microsoft.EntityFrameworkCore.Design") // see https://github.com/dotnet/efcore/issues/29923
 {
     Log.Fatal(ex, "Application terminated unexpectedly");
 }
