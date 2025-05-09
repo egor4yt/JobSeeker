@@ -14,7 +14,7 @@ try
 
     var appUrls = builder.Configuration["applicationUrl"]?.Split(';')
                   ?? builder.Configuration.GetValue<string>("urls")?.Split(';')
-                  ?? [];
+                  ?? []; 
 
     Log.Information("Application listening on {Addresses}", appUrls);
 
