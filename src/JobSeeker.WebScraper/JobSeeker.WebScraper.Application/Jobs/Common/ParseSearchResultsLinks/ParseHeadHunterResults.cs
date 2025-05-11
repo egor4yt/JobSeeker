@@ -24,7 +24,7 @@ public partial class ParseSearchResultsLinksJob
         var currentPage = 0;
         int? lastPage = null;
 
-        var session = await playwrightFactory.CreateSessionAsync("hh.ru", _cancellationToken);
+        await using var session = await playwrightFactory.CreateSessionAsync("hh.ru", _cancellationToken);
 
         var tasks = Enumerable.Range(0, 10).Select(x => ParseHeadHunterPageResultsAsync(x, baseUrl + $"&page={x}", session)).ToList();
         await Task.WhenAll(tasks);
@@ -32,8 +32,6 @@ public partial class ParseSearchResultsLinksJob
         {
             response.AddRange(task.Result);
         }
-
-        await session.DisposeAsync();
 
         logger.LogDebug("Completed head hunter results for {SearchText}", scrapTask.SearchText);
         return response;
