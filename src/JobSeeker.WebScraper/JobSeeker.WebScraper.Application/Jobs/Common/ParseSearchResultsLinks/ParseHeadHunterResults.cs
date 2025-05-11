@@ -62,6 +62,8 @@ public partial class ParseSearchResultsLinksJob
             response.Add(newSearchResult);
         }
 
+        await page.CloseAsync();
+
         logger.LogDebug("Page {PageIndex} scraped, found: {LinksCount}", pageIndex, linksLocators.Count);
 
 

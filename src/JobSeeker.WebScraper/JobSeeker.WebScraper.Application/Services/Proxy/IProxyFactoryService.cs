@@ -13,7 +13,7 @@ public interface IProxyFactoryService
     Task<ProxyDetails> GetProxyAsync(string domain, CancellationToken cancellationToken = default);
 
     /// <summary>
-    ///     Get proxy for domain
+    ///     Release proxy for domain
     /// </summary>
     /// <param name="domain">Target domain</param>
     /// <param name="proxy">Proxy details to release</param>
