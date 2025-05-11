@@ -3,6 +3,8 @@ using Hangfire.MemoryStorage;
 using JobSeeker.WebScraper.Application.Commands.Base;
 using JobSeeker.WebScraper.Application.Jobs.Base;
 using JobSeeker.WebScraper.Application.Services.JobRunner;
+using JobSeeker.WebScraper.Application.Services.PlaywrightFactory;
+using JobSeeker.WebScraper.Application.Services.Proxy;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -13,6 +15,7 @@ public static class DependencyInjection
     public static void ConfigureApplication(this IHostApplicationBuilder app)
     {
         ConfigureInfrastructure(app.Services);
+        AddServices(app.Services);
         AddCommands(app.Services);
         AddJobs(app.Services);
     }
@@ -27,6 +30,12 @@ public static class DependencyInjection
                 .UseMemoryStorage();
         });
         services.AddHangfireServer();
+    }
+
+    private static void AddServices(IServiceCollection services)
+    {
+        services.AddSingleton<IProxyFactoryService, LocalProxyFactoryService>();
+        services.AddSingleton<PlaywrightFactoryService>();
     }
 
     private static void AddCommands(IServiceCollection services)

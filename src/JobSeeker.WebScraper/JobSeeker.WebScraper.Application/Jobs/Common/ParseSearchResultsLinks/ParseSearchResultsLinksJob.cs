@@ -1,11 +1,13 @@
 ﻿using JobSeeker.WebScraper.Application.Jobs.Base;
+using JobSeeker.WebScraper.Application.Jobs.Common.ParseSearchResultsLinks.Models;
+using JobSeeker.WebScraper.Application.Services.PlaywrightFactory;
 using JobSeeker.WebScraper.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace JobSeeker.WebScraper.Application.Jobs.Common.ParseSearchResultsLinks;
 
-public class ParseSearchResultsLinksJob(ILogger<ParseSearchResultsLinksJob> logger, ApplicationDbContext dbContext) : IJob<JobParameters.Common.ParseSearchResultsLinks>
+public partial class ParseSearchResultsLinksJob(ILogger<ParseSearchResultsLinksJob> logger, ApplicationDbContext dbContext, PlaywrightFactoryService playwrightFactory) : IJob<JobParameters.Common.ParseSearchResultsLinks>
 {
     private CancellationToken _cancellationToken = CancellationToken.None;
     private JobParameters.Common.ParseSearchResultsLinks _parameter = null!;
@@ -23,24 +25,40 @@ public class ParseSearchResultsLinksJob(ILogger<ParseSearchResultsLinksJob> logg
         logger.LogInformation("Finished parsing search results links job for scrap task {ScrapTaskId}", _parameter.ScrapTaskId);
     }
 
-    private async Task<List<object>> RunAsync()
+    private async Task<List<SearchResult>> RunAsync()
     {
         var scrapTask = await dbContext.ScrapTasks
             .Include(x => x.ScrapSources)
             .SingleAsync(x => x.Id == _parameter.ScrapTaskId, _cancellationToken);
 
+        var results = new List<SearchResult>();
+
         foreach (var scrapSource in scrapTask.ScrapSources)
         {
-            logger.LogInformation("Trying to parse search results links for {SearchText} on {Domain}", scrapTask.SearchText, scrapSource.Domain);
-            await Task.Delay(1000, _cancellationToken);
+            List<SearchResult> newResults;
+            if (scrapSource.Domain.EndsWith("hh.ru")) newResults = await ParseHeadHunterResultsAsync(scrapTask);
+            // else if (scrapSource.Domain.EndsWith("other-domain.com")) newResults = await ParseOtherDomainResultsAsync(scrapTask);
+            else
+            {
+                logger.LogWarning("Unsupported domain {Domain}", scrapSource.Domain);
+                continue;
+            }
+
+            if (newResults.Count == 0) logger.LogWarning("Not found results for domain {Domain}, scrap task {ScrapTaskId}", scrapSource.Domain, _parameter.ScrapTaskId);
+            results.AddRange(newResults);
         }
 
-        return [];
+        return results;
     }
 
-    private async Task SaveResultsAsync(IList<object> results)
+    private async Task SaveResultsAsync(IList<SearchResult> results)
     {
         await Task.Delay(1000, _cancellationToken);
+
+        foreach (var searchResult in results)
+        {
+            logger.LogDebug("New vacancy link found {Link}", searchResult.ResultLink);
+        }
 
         logger.LogInformation("Saved {VacanciesCount} vacancies", results.Count);
     }
