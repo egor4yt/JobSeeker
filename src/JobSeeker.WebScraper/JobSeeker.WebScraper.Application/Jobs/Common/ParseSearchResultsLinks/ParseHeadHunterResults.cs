@@ -31,10 +31,10 @@ public partial class ParseSearchResultsLinksJob
             return [];
         }
 
-        response.AddRange(await ParseHeadHunterPageResultsAsync(baseUrl, page));
+        response.AddRange(await ParseHeadHunterPageResultsAsync(page));
         await page.CloseAsync();
 
-        var tasks = Enumerable.Range(1, lastPage).Select(async x =>
+        var tasks = Enumerable.Range(1, lastPage - 1).Select(async x =>
         {
             var url = baseUrl + $"&page={x}";
             List<SearchResult> results = [];
@@ -42,8 +42,8 @@ public partial class ParseSearchResultsLinksJob
 
             try
             {
-                currentPage = await session.LoadPageAsync(baseUrl, _cancellationToken);
-                results = await ParseHeadHunterPageResultsAsync(url, currentPage);
+                currentPage = await session.LoadPageAsync(url, _cancellationToken);
+                results = await ParseHeadHunterPageResultsAsync(currentPage);
             }
             catch (Exception e)
             {
@@ -64,10 +64,9 @@ public partial class ParseSearchResultsLinksJob
         return response;
     }
 
-    private async Task<List<SearchResult>> ParseHeadHunterPageResultsAsync(string url, IPage page)
+    private async Task<List<SearchResult>> ParseHeadHunterPageResultsAsync(IPage page)
     {
         var response = new List<SearchResult>();
-
         var linksLocators = await page.Locator("a[data-qa='serp-item__title']").AllAsync();
 
         foreach (var linkLocator in linksLocators)
@@ -86,7 +85,7 @@ public partial class ParseSearchResultsLinksJob
             response.Add(newSearchResult);
         }
 
-        logger.LogDebug("Page {Url} scraped, found: {LinksCount}", url, linksLocators.Count);
+        logger.LogDebug("Page {Url} scraped, found: {LinksCount}", page.Url, linksLocators.Count);
 
         return response;
     }
