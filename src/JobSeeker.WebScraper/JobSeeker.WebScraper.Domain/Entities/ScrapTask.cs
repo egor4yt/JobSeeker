@@ -12,4 +12,5 @@ public class ScrapTask
     public string SearchText { get; set; } = null!;
 
     public virtual ICollection<ScrapSource> ScrapSources { get; set; } = null!;
+    public virtual ICollection<ScrapTaskResult> ScrapTaskResults { get; set; } = null!;
 }
