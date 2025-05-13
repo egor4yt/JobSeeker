@@ -49,5 +49,12 @@ internal static class KafkaConfiguration
             e.AutoOffsetReset = AutoOffsetReset.Earliest;
             e.ConfigureConsumer<MessageBroker.Consumers.ScrapTask.Created>(context);
         });
+        
+        config.TopicEndpoint<Null, Messages.ScrapTaskResult.Created>("scrap-task-result-created", "scrap-task-result-created-group", e =>
+        {
+            e.CheckpointInterval = TimeSpan.FromSeconds(1);
+            e.AutoOffsetReset = AutoOffsetReset.Earliest;
+            e.ConfigureConsumer<MessageBroker.Consumers.ScrapTaskResult.Created>(context);
+        });
     }
 }

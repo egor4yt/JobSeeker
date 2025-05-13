@@ -29,5 +29,7 @@ public class UploadSearchResultsJob(ILogger<UploadSearchResultsJob> logger, Appl
             .Where(x => x.ScrapTaskId == _parameter.ScrapTaskId
                         && x.Uploaded == false)
             .ToListAsync(_cancellationToken);
+        
+        logger.LogInformation("Jobs to process: {ScrapTaskResultsCount}", scrapTaskResults.Count);
     }
 }

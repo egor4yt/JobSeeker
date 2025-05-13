@@ -29,13 +29,13 @@ public partial class ParseSearchResultsLinksJob(
         var results = await RunAsync();
         await SaveResultsAsync(results);
 
+        logger.LogInformation("Finished parsing search results links job for scrap task {ScrapTaskId}", _parameter.ScrapTaskId);
+        
         var message = new MessageBroker.Messages.ScrapTaskResult.Created
         {
             ScrapTaskId = _parameter.ScrapTaskId
         };
         await messageProducer.ProduceAsync(message, _cancellationToken);
-
-        logger.LogInformation("Finished parsing search results links job for scrap task {ScrapTaskId}", _parameter.ScrapTaskId);
     }
 
     private async Task<List<SearchResult>> RunAsync()
