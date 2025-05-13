@@ -23,6 +23,7 @@
     <ItemGroup>
         <ProjectReference Include="..\JobSeeker.WebScraper.MessageBroker.Producers\JobSeeker.WebScraper.MessageBroker.Producers.csproj" />
         <ProjectReference Include="..\JobSeeker.WebScraper.Persistence\JobSeeker.WebScraper.Persistence.csproj"/>
+        <ProjectReference Include="..\JobSeeker.WebScraper.ObjectStorage\JobSeeker.WebScraper.ObjectStorage.csproj"/>
         <ProjectReference Include="..\JobSeeker.WebScraper.MessageBroker.Messages\JobSeeker.WebScraper.MessageBroker.Messages.csproj"/>
     </ItemGroup>
 

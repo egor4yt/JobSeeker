@@ -21,14 +21,14 @@ public static class DependencyInjection
         {
             configurator.SetKebabCaseEndpointNameFormatter();
 
-            var connectionString = configuration.GetSection(ConfigurationKeys.KafkaConnectionString);
+            var connectionString = configuration.GetSection(ConfigurationKeys.MessageQueueConnectionString);
             if (string.IsNullOrWhiteSpace(connectionString.Value))
             {
-                Log.Warning("Message broker disabled: environment variable '{ConnectionString}' was null", ConfigurationKeys.KafkaConnectionString);
+                Log.Warning("Message broker disabled: environment variable '{ConnectionString}' was null", ConfigurationKeys.MessageQueueConnectionString);
                 return;
             }
 
-            var messageBroker = configuration.GetSection(ConfigurationKeys.MessageBroker);
+            var messageBroker = configuration.GetSection(ConfigurationKeys.MessageQueueBroker);
             switch (messageBroker.Value)
             {
                 case "kafka":
@@ -36,7 +36,7 @@ public static class DependencyInjection
                     services.AddScoped(typeof(IMessageProducer<>), typeof(KafkaMessageProducer<>));
                     break;
                 default:
-                    Log.Warning("Message broker disabled: unsupported message broker '{MessageBroker}'", messageBroker.Value);
+                    Log.Warning("Message broker disabled: unsupported broker '{MessageBroker}'", messageBroker.Value);
                     break;
             }
         });

@@ -2,6 +2,7 @@ using Hangfire;
 using JobSeeker.WebScraper.Api.Configuration;
 using JobSeeker.WebScraper.Application.Configuration;
 using JobSeeker.WebScraper.MessageBroker.Configuration;
+using JobSeeker.WebScraper.ObjectStorage.Configuration;
 using JobSeeker.WebScraper.Persistence.Configuration;
 using Serilog;
 
@@ -12,6 +13,7 @@ try
     builder.ConfigureMessageBroker();
     builder.ConfigureApplication();
     builder.ConfigurePersistence();
+    builder.ConfigureObjectStorage();
 
     var app = builder.Build();
     app.UseHangfireDashboard();
