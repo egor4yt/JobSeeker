@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.WebScraper.Api", "JobSeeker.WebScraper.Api\JobSeeker.WebScraper.Api.csproj", "{ABB83023-C417-4861-A30A-1452C00DAAA9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.WebScraper.MessageBroker", "JobSeeker.WebScraper.MessageBroker\JobSeeker.WebScraper.MessageBroker.csproj", "{90F92FDC-8E86-431F-9904-68F8F3CEE7BD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.WebScraper.MessageBroker.Configuration", "JobSeeker.WebScraper.MessageBroker.Configuration\JobSeeker.WebScraper.MessageBroker.Configuration.csproj", "{90F92FDC-8E86-431F-9904-68F8F3CEE7BD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.WebScraper.Shared", "JobSeeker.WebScraper.Shared\JobSeeker.WebScraper.Shared.csproj", "{ABE3F958-AD64-4B5A-BAE0-76B56DE7E71C}"
 EndProject
@@ -11,6 +11,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.WebScraper.Persistence", "JobSeeker.WebScraper.Persistence\JobSeeker.WebScraper.Persistence.csproj", "{8F3B3452-9B04-4B95-8D87-5EB909FD13CD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.WebScraper.Domain", "JobSeeker.WebScraper.Domain\JobSeeker.WebScraper.Domain.csproj", "{94C6BE53-C789-4D97-96D1-8F6E445A19B6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.WebScraper.MessageBroker.Messages", "JobSeeker.WebScraper.MessageBroker.Messages\JobSeeker.WebScraper.MessageBroker.Messages.csproj", "{69729374-AB42-4815-BC1A-42C43237BDFB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.WebScraper.MessageBroker.Consumers", "JobSeeker.WebScraper.MessageBroker.Consumers\JobSeeker.WebScraper.MessageBroker.Consumers.csproj", "{B3A62078-FD33-4223-AFF8-1F007D30B0AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.WebScraper.MessageBroker.Producers", "JobSeeker.WebScraper.MessageBroker.Producers\JobSeeker.WebScraper.MessageBroker.Producers.csproj", "{22EF0C7F-104C-4F5A-AE52-30FCE18DCEDF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,5 +48,17 @@ Global
 		{94C6BE53-C789-4D97-96D1-8F6E445A19B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{94C6BE53-C789-4D97-96D1-8F6E445A19B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{94C6BE53-C789-4D97-96D1-8F6E445A19B6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69729374-AB42-4815-BC1A-42C43237BDFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69729374-AB42-4815-BC1A-42C43237BDFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69729374-AB42-4815-BC1A-42C43237BDFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69729374-AB42-4815-BC1A-42C43237BDFB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3A62078-FD33-4223-AFF8-1F007D30B0AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3A62078-FD33-4223-AFF8-1F007D30B0AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3A62078-FD33-4223-AFF8-1F007D30B0AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3A62078-FD33-4223-AFF8-1F007D30B0AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22EF0C7F-104C-4F5A-AE52-30FCE18DCEDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22EF0C7F-104C-4F5A-AE52-30FCE18DCEDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22EF0C7F-104C-4F5A-AE52-30FCE18DCEDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22EF0C7F-104C-4F5A-AE52-30FCE18DCEDF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

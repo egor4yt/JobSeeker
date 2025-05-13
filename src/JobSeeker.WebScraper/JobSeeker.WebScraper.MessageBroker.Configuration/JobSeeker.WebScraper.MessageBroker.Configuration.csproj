@@ -4,7 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <RootNamespace>JobSeeker.WebScraper.MessageBroker</RootNamespace>
+        <RootNamespace>JobSeeker.WebScraper.MessageBroker.Configuration</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -15,7 +15,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\JobSeeker.WebScraper.Application\JobSeeker.WebScraper.Application.csproj"/>
+        <ProjectReference Include="..\JobSeeker.WebScraper.MessageBroker.Consumers\JobSeeker.WebScraper.MessageBroker.Consumers.csproj"/>
+        <ProjectReference Include="..\JobSeeker.WebScraper.MessageBroker.Producers\JobSeeker.WebScraper.MessageBroker.Producers.csproj" />
     </ItemGroup>
 
 </Project>

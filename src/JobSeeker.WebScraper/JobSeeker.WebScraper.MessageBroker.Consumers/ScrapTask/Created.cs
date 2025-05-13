@@ -10,6 +10,6 @@ public class Created(ILogger<Created> logger, ICommandHandler<CreateScrapTaskReq
     public async Task Consume(ConsumeContext<Messages.ScrapTask.Created> context)
     {
         logger.LogDebug("New scrap task requested {SearchText}", context.Message.SearchText);
-        await handler.ExecuteAsync(context.Message.ToCreateScrapTaskRequest(), CancellationToken.None);
+        await handler.ExecuteAsync(new CreateScrapTaskRequest(context.Message), CancellationToken.None);
     }
 }

@@ -1,7 +1,7 @@
 ﻿using JobSeeker.WebScraper.Application.Jobs.Common.ParseSearchResultsLinks.Models;
-using JobSeeker.WebScraper.Application.Services.PlaywrightFactory;
 using JobSeeker.WebScraper.Domain.Entities;
 using Microsoft.Extensions.Logging;
+using Microsoft.Playwright;
 
 namespace JobSeeker.WebScraper.Application.Jobs.Common.ParseSearchResultsLinks;
 
@@ -21,27 +21,53 @@ public partial class ParseSearchResultsLinksJob
 
         var baseUrl = "https://hh.ru/search/vacancy?" + string.Join("&", query.SelectMany(pair => pair.Value.Select(value => $"{pair.Key}={value}")));
 
-        var currentPage = 0;
-        int? lastPage = null;
-
         await using var session = await playwrightFactory.CreateSessionAsync("hh.ru", _cancellationToken);
 
-        var tasks = Enumerable.Range(0, 10).Select(x => ParseHeadHunterPageResultsAsync(x, baseUrl + $"&page={x}", session)).ToList();
-        await Task.WhenAll(tasks);
-        foreach (var task in tasks)
+        var page = await session.LoadPageAsync(baseUrl, _cancellationToken);
+        var lastPageAsString = await page.Locator("a[data-qa='pager-page']").Last.TextContentAsync();
+        if (int.TryParse(lastPageAsString, out var lastPage) == false)
         {
-            response.AddRange(task.Result);
+            logger.LogWarning("Can't find last page number {Url}", baseUrl);
+            return [];
         }
+
+        response.AddRange(await ParseHeadHunterPageResultsAsync(baseUrl, page));
+        await page.CloseAsync();
+
+        var tasks = Enumerable.Range(1, lastPage).Select(async x =>
+        {
+            var url = baseUrl + $"&page={x}";
+            List<SearchResult> results = [];
+            IPage? currentPage = null;
+
+            try
+            {
+                currentPage = await session.LoadPageAsync(baseUrl, _cancellationToken);
+                results = await ParseHeadHunterPageResultsAsync(url, currentPage);
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e, "Failed to open page {Url}", url);
+            }
+            finally
+            {
+                if (currentPage != null) await currentPage.CloseAsync();
+            }
+
+            return results;
+        }).ToList();
+
+        var taskResults = await Task.WhenAll(tasks);
+        response.AddRange(taskResults.SelectMany(x => x));
 
         logger.LogDebug("Completed head hunter results for {SearchText}", scrapTask.SearchText);
         return response;
     }
 
-    private async Task<List<SearchResult>> ParseHeadHunterPageResultsAsync(int pageIndex, string url, PlaywrightSession session)
+    private async Task<List<SearchResult>> ParseHeadHunterPageResultsAsync(string url, IPage page)
     {
         var response = new List<SearchResult>();
 
-        var page = await session.LoadPageAsync(url, _cancellationToken);
         var linksLocators = await page.Locator("a[data-qa='serp-item__title']").AllAsync();
 
         foreach (var linkLocator in linksLocators)
@@ -60,10 +86,7 @@ public partial class ParseSearchResultsLinksJob
             response.Add(newSearchResult);
         }
 
-        await page.CloseAsync();
-
-        logger.LogDebug("Page {PageIndex} scraped, found: {LinksCount}", pageIndex, linksLocators.Count);
-
+        logger.LogDebug("Page {Url} scraped, found: {LinksCount}", url, linksLocators.Count);
 
         return response;
     }

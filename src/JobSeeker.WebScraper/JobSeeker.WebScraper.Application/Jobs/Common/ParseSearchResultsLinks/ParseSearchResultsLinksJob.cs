@@ -1,13 +1,20 @@
 ﻿using JobSeeker.WebScraper.Application.Jobs.Base;
 using JobSeeker.WebScraper.Application.Jobs.Common.ParseSearchResultsLinks.Models;
 using JobSeeker.WebScraper.Application.Services.PlaywrightFactory;
+using JobSeeker.WebScraper.Domain.Entities;
+using JobSeeker.WebScraper.MessageBroker.Producers;
 using JobSeeker.WebScraper.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace JobSeeker.WebScraper.Application.Jobs.Common.ParseSearchResultsLinks;
 
-public partial class ParseSearchResultsLinksJob(ILogger<ParseSearchResultsLinksJob> logger, ApplicationDbContext dbContext, PlaywrightFactoryService playwrightFactory) : IJob<JobParameters.Common.ParseSearchResultsLinks>
+public partial class ParseSearchResultsLinksJob(
+    ILogger<ParseSearchResultsLinksJob> logger,
+    ApplicationDbContext dbContext,
+    PlaywrightFactoryService playwrightFactory,
+    IMessageProducer<MessageBroker.Messages.ScrapTaskResult.Created> messageProducer
+) : IJob<JobParameters.Common.ParseSearchResultsLinks>
 {
     private CancellationToken _cancellationToken = CancellationToken.None;
     private JobParameters.Common.ParseSearchResultsLinks _parameter = null!;
@@ -21,6 +28,12 @@ public partial class ParseSearchResultsLinksJob(ILogger<ParseSearchResultsLinksJ
 
         var results = await RunAsync();
         await SaveResultsAsync(results);
+
+        var message = new MessageBroker.Messages.ScrapTaskResult.Created
+        {
+            ScrapTaskId = _parameter.ScrapTaskId
+        };
+        await messageProducer.ProduceAsync(message, _cancellationToken);
 
         logger.LogInformation("Finished parsing search results links job for scrap task {ScrapTaskId}", _parameter.ScrapTaskId);
     }
@@ -53,13 +66,16 @@ public partial class ParseSearchResultsLinksJob(ILogger<ParseSearchResultsLinksJ
 
     private async Task SaveResultsAsync(IList<SearchResult> results)
     {
-        await Task.Delay(1000, _cancellationToken);
-
-        foreach (var searchResult in results)
+        var entitiesToSave = results.Select(x => new ScrapTaskResult
         {
-            logger.LogDebug("New vacancy link found {Link}", searchResult.ResultLink);
-        }
+            Uploaded = false,
+            Link = x.ResultLink,
+            ScrapTaskId = _parameter.ScrapTaskId
+        });
 
-        logger.LogInformation("Saved {VacanciesCount} vacancies", results.Count);
+        await dbContext.ScrapTaskResults.AddRangeAsync(entitiesToSave, _cancellationToken);
+        await dbContext.SaveChangesAsync(_cancellationToken);
+
+        logger.LogInformation("Saved {ScrapTaskResultsCount} vacancies", results.Count);
     }
 }
