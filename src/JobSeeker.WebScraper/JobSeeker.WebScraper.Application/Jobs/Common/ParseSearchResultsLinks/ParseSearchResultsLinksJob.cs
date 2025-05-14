@@ -30,7 +30,8 @@ public partial class ParseSearchResultsLinksJob(
         await SaveResultsAsync(results);
 
         logger.LogInformation("Finished parsing search results links job for scrap task {ScrapTaskId}", _parameter.ScrapTaskId);
-        
+        if (results.Count == 0) return;
+
         var message = new MessageBroker.Messages.ScrapTaskResult.Created
         {
             ScrapTaskId = _parameter.ScrapTaskId
@@ -50,19 +51,11 @@ public partial class ParseSearchResultsLinksJob(
         {
             List<SearchResult> newResults;
 
-            try
+            if (scrapSource.Domain.EndsWith("hh.ru")) newResults = await ParseHeadHunterResultsAsync(scrapTask);
+            // else if (scrapSource.Domain.EndsWith("other-domain.com")) newResults = await ParseOtherDomainResultsAsync(scrapTask);
+            else
             {
-                if (scrapSource.Domain.EndsWith("hh.ru")) newResults = await ParseHeadHunterResultsAsync(scrapTask);
-                // else if (scrapSource.Domain.EndsWith("other-domain.com")) newResults = await ParseOtherDomainResultsAsync(scrapTask);
-                else
-                {
-                    logger.LogWarning("Unsupported domain {Domain}", scrapSource.Domain);
-                    continue;
-                }
-            }
-            catch (Exception e)
-            {
-                logger.LogError(e, "Failed to parse results for domain {Domain}, scrap task {ScrapTaskId}", scrapSource.Domain, _parameter.ScrapTaskId);
+                logger.LogWarning("Unsupported domain {Domain}", scrapSource.Domain);
                 continue;
             }
 

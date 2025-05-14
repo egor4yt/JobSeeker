@@ -1,26 +1,28 @@
 ﻿using Amazon.S3;
 using Amazon.S3.Model;
+using JobSeeker.WebScraper.ObjectStorage.Models;
 
 namespace JobSeeker.WebScraper.ObjectStorage;
 
 public class MinioStorage(IAmazonS3 client) : IObjectStorage
 {
-    public async Task PutObjectAsync(string bucket, string path, string fileName, Stream stream, CancellationToken cancellationToken)
+    public async Task PutObjectAsync(PutObjectOptions options, CancellationToken cancellationToken)
     {
         try
         {
-            await client.HeadBucketAsync(new HeadBucketRequest { BucketName = bucket }, cancellationToken);
+            await client.HeadBucketAsync(new HeadBucketRequest { BucketName = options.Bucket }, cancellationToken);
         }
         catch (AmazonS3Exception e) when (e.StatusCode == System.Net.HttpStatusCode.NotFound)
         {
-            await client.PutBucketAsync(new PutBucketRequest { BucketName = bucket }, cancellationToken);
+            await client.PutBucketAsync(new PutBucketRequest { BucketName = options.Bucket }, cancellationToken);
         }
 
         var request = new PutObjectRequest
         {
-            BucketName = bucket,
-            Key = $"{path}/{fileName}",
-            InputStream = stream
+            BucketName = options.Bucket,
+            Key = $"{options.Path}/{options.FileName}",
+            InputStream = options.FileStream,
+            ContentType = options.ContentType
         };
 
         await client.PutObjectAsync(request, cancellationToken);

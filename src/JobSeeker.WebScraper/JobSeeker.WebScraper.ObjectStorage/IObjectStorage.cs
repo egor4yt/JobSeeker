@@ -1,6 +1,8 @@
-﻿namespace JobSeeker.WebScraper.ObjectStorage;
+﻿using JobSeeker.WebScraper.ObjectStorage.Models;
+
+namespace JobSeeker.WebScraper.ObjectStorage;
 
 public interface IObjectStorage
 {
-    Task PutObjectAsync(string bucket, string path, string fileName, Stream bytes, CancellationToken cancellationToken = default);
+    Task PutObjectAsync(PutObjectOptions options, CancellationToken cancellationToken = default);
 }

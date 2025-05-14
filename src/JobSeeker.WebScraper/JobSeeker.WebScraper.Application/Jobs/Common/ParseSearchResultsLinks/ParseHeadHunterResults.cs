@@ -25,10 +25,13 @@ public partial class ParseSearchResultsLinksJob
 
         var page = await session.LoadPageAsync(baseUrl, _cancellationToken);
         var lastPageAsString = await page.Locator("a[data-qa='pager-page']").Last.TextContentAsync();
-        if (int.TryParse(lastPageAsString, out var lastPage) == false)
+        var lastPagerItem = page.Locator("a[data-qa='pager-page']").Last;
+
+        if (await lastPagerItem.CountAsync() == 0
+            || int.TryParse(await lastPagerItem.TextContentAsync(), out var lastPage) == false)
         {
             logger.LogWarning("Can't find last page number {Url}", baseUrl);
-            return [];
+            return await ParseHeadHunterPageResultsAsync(page);
         }
 
         response.AddRange(await ParseHeadHunterPageResultsAsync(page));

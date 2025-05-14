@@ -1,6 +1,6 @@
 namespace JobSeeker.WebScraper.MessageBroker.Producers;
 
-public interface IMessageProducer<T> where T : class
+public interface IMessageProducer<TMessage> where TMessage : class
 {
-    Task ProduceAsync(T message, CancellationToken cancellationToken = default);
+    Task ProduceAsync(TMessage message, CancellationToken cancellationToken = default);
 }

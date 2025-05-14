@@ -2,4 +2,5 @@
 
 public class Completed
 {
+    public int ScrapTaskId { get; set; }
 }
