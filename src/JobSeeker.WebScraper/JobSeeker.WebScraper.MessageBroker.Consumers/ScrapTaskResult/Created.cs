@@ -12,9 +12,8 @@ public class Created(ILogger<Created> logger, IBackgroundJobClient jobClient) : 
         logger.LogDebug("New scrap task result {ScrapTaskId}", context.Message.ScrapTaskId);
         var parameter = new Application.JobParameters.Common.UploadSearchResults
         {
-            JobId = Guid.NewGuid(),
             ScrapTaskId = context.Message.ScrapTaskId
         };
-        jobClient.Enqueue<JobRunnerService>(x => x.RunAsync(parameter, CancellationToken.None));
+        jobClient.Enqueue<JobRunnerService>(x => x.RunAsync(parameter, null!, CancellationToken.None));
     }
 }

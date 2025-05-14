@@ -2,5 +2,4 @@
 
 public interface IJobParameter
 {
-    public Guid JobId { get; init; }
 }

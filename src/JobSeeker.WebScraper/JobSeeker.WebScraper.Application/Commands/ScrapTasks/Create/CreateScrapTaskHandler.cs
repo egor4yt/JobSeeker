@@ -40,9 +40,8 @@ public class CreateScrapTaskHandler(ApplicationDbContext dbContext, IBackgroundJ
 
         var jobParameter = new JobParameters.Common.ParseSearchResultsLinks
         {
-            JobId = Guid.NewGuid(),
             ScrapTaskId = newScrapTask.Id
         };
-        jobClient.Enqueue<JobRunnerService>(x => x.RunAsync(jobParameter, cancellationToken));
+        jobClient.Enqueue<JobRunnerService>(x => x.RunAsync(jobParameter, null!, CancellationToken.None));
     }
 }
