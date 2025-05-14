@@ -1,6 +1,6 @@
 ﻿using Serilog;
 
-namespace JobSeeker.WebScraper.Api.Configuration;
+namespace JobSeeker.PagesAnalyzer.Api.Configuration;
 
 public static class DependencyInjection
 {
