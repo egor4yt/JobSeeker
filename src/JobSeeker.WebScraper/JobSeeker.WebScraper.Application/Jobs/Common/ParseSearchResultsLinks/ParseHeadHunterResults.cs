@@ -24,7 +24,6 @@ public partial class ParseSearchResultsLinksJob
         await using var session = await playwrightFactory.CreateSessionAsync("hh.ru", _cancellationToken);
 
         var page = await session.LoadPageAsync(baseUrl, _cancellationToken);
-        var lastPageAsString = await page.Locator("a[data-qa='pager-page']").Last.TextContentAsync();
         var lastPagerItem = page.Locator("a[data-qa='pager-page']").Last;
 
         if (await lastPagerItem.CountAsync() == 0

@@ -14,9 +14,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\JobSeeker.PagesAnalyzer.MessageBroker.Consumers\JobSeeker.PagesAnalyzer.MessageBroker.Consumers.csproj" />
-      <ProjectReference Include="..\JobSeeker.PagesAnalyzer.MessageBroker.Producers\JobSeeker.PagesAnalyzer.MessageBroker.Producers.csproj" />
-      <ProjectReference Include="..\JobSeeker.PagesAnalyzer.Shared\JobSeeker.PagesAnalyzer.Shared.csproj" />
+        <ProjectReference Include="..\JobSeeker.PagesAnalyzer.MessageBroker.Consumers\JobSeeker.PagesAnalyzer.MessageBroker.Consumers.csproj"/>
+        <ProjectReference Include="..\JobSeeker.PagesAnalyzer.MessageBroker.Producers\JobSeeker.PagesAnalyzer.MessageBroker.Producers.csproj"/>
+        <ProjectReference Include="..\JobSeeker.PagesAnalyzer.Shared\JobSeeker.PagesAnalyzer.Shared.csproj"/>
     </ItemGroup>
-    
+
 </Project>

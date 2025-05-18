@@ -17,7 +17,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\JobSeeker.PagesAnalyzer.Application\JobSeeker.PagesAnalyzer.Application.csproj"/>
-        <ProjectReference Include="..\JobSeeker.PagesAnalyzer.MessageBroker.Configuration\JobSeeker.PagesAnalyzer.MessageBroker.Configuration.csproj" />
+        <ProjectReference Include="..\JobSeeker.PagesAnalyzer.MessageBroker.Configuration\JobSeeker.PagesAnalyzer.MessageBroker.Configuration.csproj"/>
     </ItemGroup>
 
 </Project>

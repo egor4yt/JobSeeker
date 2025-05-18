@@ -30,7 +30,7 @@ internal static class KafkaConfiguration
 
     private static void ConfigureProducers(IRiderRegistrationConfigurator config)
     {
-        config.AddProducer<Messages.ScrapTask.Completed>("scrap-task-completed");
+        config.AddProducer<Messages.ScrapTask.Analyzed>("scrap-task-analyzed");
     }
 
     private static void ConfigureTopics(IRiderRegistrationContext context, IKafkaFactoryConfigurator config)

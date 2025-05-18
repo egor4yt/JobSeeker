@@ -43,7 +43,7 @@ public class MinioStorage(IAmazonS3 client) : IObjectStorage
             };
 
             var result = await client.ListObjectsV2Async(request, cancellationToken);
-            response.AddRange(result.S3Objects.Select(x => x.Key));
+            if (result.KeyCount != 0) response.AddRange(result.S3Objects.Select(x => x.Key));
 
             if (result.IsTruncated.HasValue == false) break;
             continuationToken = result.IsTruncated.Value ? result.NextContinuationToken : null;
@@ -51,5 +51,20 @@ public class MinioStorage(IAmazonS3 client) : IObjectStorage
 
 
         return response;
+    }
+
+    public async Task<Stream> GetObjectStreamAsync(GetObjectOptions options, CancellationToken cancellationToken = default)
+    {
+        return await client.GetObjectStreamAsync(options.Bucket, options.Path, null, cancellationToken);
+    }
+
+    public async Task DeleteObjectAsync(DeleteObjectOptions options, CancellationToken cancellationToken = default)
+    {
+        var request = new DeleteObjectRequest
+        {
+            BucketName = options.Bucket,
+            Key = options.Path
+        };
+        await client.DeleteObjectAsync(request, cancellationToken);
     }
 }

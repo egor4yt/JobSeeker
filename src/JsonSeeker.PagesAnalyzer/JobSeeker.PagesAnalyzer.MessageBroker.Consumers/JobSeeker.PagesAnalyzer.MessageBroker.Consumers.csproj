@@ -11,8 +11,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\JobSeeker.PagesAnalyzer.Application\JobSeeker.PagesAnalyzer.Application.csproj" />
+        <ProjectReference Include="..\JobSeeker.PagesAnalyzer.Application\JobSeeker.PagesAnalyzer.Application.csproj"/>
         <ProjectReference Include="..\JobSeeker.PagesAnalyzer.MessageBroker.Messages\JobSeeker.PagesAnalyzer.MessageBroker.Messages.csproj"/>
     </ItemGroup>
-    
+
 </Project>

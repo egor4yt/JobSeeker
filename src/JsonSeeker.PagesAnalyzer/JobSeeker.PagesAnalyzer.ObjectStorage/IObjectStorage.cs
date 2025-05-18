@@ -18,4 +18,8 @@ public interface IObjectStorage
     /// <param name="cancellationToken">A token that can be used to cancel the asynchronous operation.</param>
     /// <returns>List of object keys.</returns>
     Task<List<string>> GetAllObjectsRecursiveAsync(GetAllObjectsOptions options, CancellationToken cancellationToken = default);
+
+    Task<Stream> GetObjectStreamAsync(GetObjectOptions options, CancellationToken cancellationToken = default);
+
+    Task DeleteObjectAsync(DeleteObjectOptions options, CancellationToken cancellationToken = default);
 }
