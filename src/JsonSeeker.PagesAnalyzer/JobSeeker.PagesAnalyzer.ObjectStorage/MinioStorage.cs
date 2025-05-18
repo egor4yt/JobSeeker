@@ -27,4 +27,29 @@ public class MinioStorage(IAmazonS3 client) : IObjectStorage
 
         await client.PutObjectAsync(request, cancellationToken);
     }
+
+    public async Task<List<string>> GetAllObjectsRecursiveAsync(GetAllObjectsOptions options, CancellationToken cancellationToken = default)
+    {
+        var response = new List<string>();
+        string? continuationToken = null;
+
+        do
+        {
+            var request = new ListObjectsV2Request
+            {
+                BucketName = options.Bucket,
+                ContinuationToken = continuationToken,
+                Prefix = options.Path
+            };
+
+            var result = await client.ListObjectsV2Async(request, cancellationToken);
+            response.AddRange(result.S3Objects.Select(x => x.Key));
+
+            if (result.IsTruncated.HasValue == false) break;
+            continuationToken = result.IsTruncated.Value ? result.NextContinuationToken : null;
+        } while (continuationToken != null);
+
+
+        return response;
+    }
 }
