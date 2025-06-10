@@ -1,0 +1,70 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.Deduplication.Api", "JobSeeker.Deduplication.Api\JobSeeker.Deduplication.Api.csproj", "{9E303E8B-1A0B-41EB-ABF3-206B05952AB2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.Deduplication.MessageBroker.Configuration", "JobSeeker.Deduplication.MessageBroker.Configuration\JobSeeker.Deduplication.MessageBroker.Configuration.csproj", "{EBD510F9-36DB-4E22-8C92-FF4498B4CC48}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.Deduplication.MessageBroker.Consumers", "JobSeeker.Deduplication.MessageBroker.Consumers\JobSeeker.Deduplication.MessageBroker.Consumers.csproj", "{0CEAEE10-C827-44AC-939D-06900F72F31B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.Deduplication.MessageBroker.Messages", "JobSeeker.Deduplication.MessageBroker.Messages\JobSeeker.Deduplication.MessageBroker.Messages.csproj", "{B1803B97-3539-48CE-A5BF-7EC22981331C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.Deduplication.ObjectStorage", "JobSeeker.Deduplication.ObjectStorage\JobSeeker.Deduplication.ObjectStorage.csproj", "{E899B40D-AD6C-48B8-B606-5D4ECF52A50D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.Deduplication.Persistence", "JobSeeker.Deduplication.Persistence\JobSeeker.Deduplication.Persistence.csproj", "{55F2A267-AB67-44C5-A706-A6349E44D512}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.Deduplication.Shared", "JobSeeker.Deduplication.Shared\JobSeeker.Deduplication.Shared.csproj", "{9F77C267-CCC1-4062-B93C-F637CEB11037}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.Deduplication.Application", "JobSeeker.Deduplication.Application\JobSeeker.Deduplication.Application.csproj", "{D2E602A5-5885-4BE6-AA48-3E84C606436D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.Deduplication.MessageBroker.Producers", "JobSeeker.Deduplication.MessageBroker.Producers\JobSeeker.Deduplication.MessageBroker.Producers.csproj", "{2188911C-AC10-4B4D-9671-43C622AF92E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.Deduplication.Domain", "JobSeeker.Deduplication.Domain\JobSeeker.Deduplication.Domain.csproj", "{143280F0-CEE3-457E-829F-BDAEC361EDEF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9E303E8B-1A0B-41EB-ABF3-206B05952AB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E303E8B-1A0B-41EB-ABF3-206B05952AB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E303E8B-1A0B-41EB-ABF3-206B05952AB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E303E8B-1A0B-41EB-ABF3-206B05952AB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EBD510F9-36DB-4E22-8C92-FF4498B4CC48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBD510F9-36DB-4E22-8C92-FF4498B4CC48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBD510F9-36DB-4E22-8C92-FF4498B4CC48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EBD510F9-36DB-4E22-8C92-FF4498B4CC48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CEAEE10-C827-44AC-939D-06900F72F31B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CEAEE10-C827-44AC-939D-06900F72F31B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CEAEE10-C827-44AC-939D-06900F72F31B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CEAEE10-C827-44AC-939D-06900F72F31B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1803B97-3539-48CE-A5BF-7EC22981331C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1803B97-3539-48CE-A5BF-7EC22981331C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1803B97-3539-48CE-A5BF-7EC22981331C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1803B97-3539-48CE-A5BF-7EC22981331C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E899B40D-AD6C-48B8-B606-5D4ECF52A50D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E899B40D-AD6C-48B8-B606-5D4ECF52A50D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E899B40D-AD6C-48B8-B606-5D4ECF52A50D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E899B40D-AD6C-48B8-B606-5D4ECF52A50D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55F2A267-AB67-44C5-A706-A6349E44D512}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55F2A267-AB67-44C5-A706-A6349E44D512}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55F2A267-AB67-44C5-A706-A6349E44D512}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55F2A267-AB67-44C5-A706-A6349E44D512}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9F77C267-CCC1-4062-B93C-F637CEB11037}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9F77C267-CCC1-4062-B93C-F637CEB11037}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9F77C267-CCC1-4062-B93C-F637CEB11037}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9F77C267-CCC1-4062-B93C-F637CEB11037}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2E602A5-5885-4BE6-AA48-3E84C606436D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2E602A5-5885-4BE6-AA48-3E84C606436D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2E602A5-5885-4BE6-AA48-3E84C606436D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2E602A5-5885-4BE6-AA48-3E84C606436D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2188911C-AC10-4B4D-9671-43C622AF92E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2188911C-AC10-4B4D-9671-43C622AF92E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2188911C-AC10-4B4D-9671-43C622AF92E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2188911C-AC10-4B4D-9671-43C622AF92E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{143280F0-CEE3-457E-829F-BDAEC361EDEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{143280F0-CEE3-457E-829F-BDAEC361EDEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{143280F0-CEE3-457E-829F-BDAEC361EDEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{143280F0-CEE3-457E-829F-BDAEC361EDEF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Hangfire.AspNetCore" Version="1.8.18"/>
+        <PackageReference Include="Hangfire.Core" Version="1.8.18"/>
+        <PackageReference Include="Hangfire.MemoryStorage" Version="1.8.1.1"/>
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.4"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.4"/>
+        <PackageReference Include="Microsoft.Playwright" Version="1.52.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="Jobs\Common\"/>
+        <Folder Include="Jobs\Recurring\"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\JobSeeker.Deduplication.MessageBroker.Producers\JobSeeker.Deduplication.MessageBroker.Producers.csproj"/>
+        <ProjectReference Include="..\JobSeeker.Deduplication.Persistence\JobSeeker.Deduplication.Persistence.csproj"/>
+        <ProjectReference Include="..\JobSeeker.Deduplication.ObjectStorage\JobSeeker.Deduplication.ObjectStorage.csproj"/>
+        <ProjectReference Include="..\JobSeeker.Deduplication.MessageBroker.Messages\JobSeeker.Deduplication.MessageBroker.Messages.csproj"/>
+    </ItemGroup>
+
+</Project>

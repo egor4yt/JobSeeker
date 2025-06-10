@@ -1,0 +1,7 @@
+﻿dotnet ef migrations add Message --project JobSeeker.Deduplication.Persistence --startup-project JobSeeker.Deduplication.Api
+
+dotnet ef database update --project JobSeeker.Deduplication.Persistence --startup-project JobSeeker.Deduplication.Api
+
+dotnet ef database drop --project JobSeeker.Deduplication.Persistence --startup-project JobSeeker.Deduplication.Api
+
+dotnet ef migrations remove --project JobSeeker.Deduplication.Persistence --startup-project JobSeeker.Deduplication.Api

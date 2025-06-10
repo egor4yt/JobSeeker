@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="MassTransit" Version="8.4.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\JobSeeker.Deduplication.Application\JobSeeker.Deduplication.Application.csproj"/>
+        <ProjectReference Include="..\JobSeeker.Deduplication.MessageBroker.Messages\JobSeeker.Deduplication.MessageBroker.Messages.csproj"/>
+    </ItemGroup>
+</Project>
