@@ -8,7 +8,7 @@ you can focus on applying, not searching.
 
 # Structure of the repository
 
-- src - source code of the backend of this application
+- src - source code
 - docs - project documentation
 
 # Stack
@@ -20,18 +20,18 @@ and is containerized with Docker Compose for easy local development and deployme
 ## Backend
 - .NET 8.0
 - Entity Framework (ORM)
-- MediatR (helps to organize CQRS pattern)
 - Serilog (logging)
-- Saga (StateMachine)
 - MassTransit (pub/sub)
-- Confluent.Kafka (message broker)
-- Telegram.Bot (telegram integration)
+- Hangfire (delayed background tasks)
+- Amazon.S3 (S3 object storage manager)
+- HtmlAgilityPack (HTML parsing)
+- Playwright (Chromium emulation)
 
 ## Data
 - PostgreSQL (OLTP database)
 - Redis (cache)
 - Kafka (message broker)
-- Zookeeper (distributed applications configs)
+- Minio (S3 object storage)
 
 ## Third-party integration
 - Telegram bot (messenger)
