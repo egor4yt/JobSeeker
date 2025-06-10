@@ -1,13 +1,17 @@
-﻿using JobSeeker.WebScraper.Application.Jobs.Common.ParseSearchResultsLinks.Models;
+﻿using JobSeeker.WebScraper.Application.Jobs.Common.ParseSearchResultsLinks;
+using JobSeeker.WebScraper.Application.Jobs.Common.ParseSearchResultsLinks.Models;
+using JobSeeker.WebScraper.Application.Services.PlaywrightFactory;
 using JobSeeker.WebScraper.Domain.Entities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
 
-namespace JobSeeker.WebScraper.Application.Jobs.Common.ParseSearchResultsLinks;
+namespace JobSeeker.WebScraper.Application.Services.SearchResultsParsing;
 
-public partial class ParseSearchResultsLinksJob
+public class HhSearchResultsParsingStrategy(ILogger<ParseSearchResultsLinksJob> logger, PlaywrightFactoryService playwrightFactory) : ISearchResultsParsingStrategy
 {
-    private async Task<List<SearchResult>> ParseHeadHunterResultsAsync(ScrapTask scrapTask)
+    public const string Domain = "hh.ru";
+
+    public async Task<IList<SearchResult>> ParseAsync(ScrapTask scrapTask, CancellationToken cancellationToken)
     {
         logger.LogDebug("Started parsing head hunter results for {SearchText}", scrapTask.SearchText);
 
@@ -21,9 +25,9 @@ public partial class ParseSearchResultsLinksJob
 
         var baseUrl = "https://hh.ru/search/vacancy?" + string.Join("&", query.SelectMany(pair => pair.Value.Select(value => $"{pair.Key}={value}")));
 
-        await using var session = await playwrightFactory.CreateSessionAsync("hh.ru", _cancellationToken);
+        await using var session = await playwrightFactory.CreateSessionAsync("hh.ru", cancellationToken);
 
-        var page = await session.LoadPageAsync(baseUrl, _cancellationToken);
+        var page = await session.LoadPageAsync(baseUrl, cancellationToken);
         var lastPagerItem = page.Locator("a[data-qa='pager-page']").Last;
 
         if (await lastPagerItem.CountAsync() == 0
@@ -44,7 +48,7 @@ public partial class ParseSearchResultsLinksJob
 
             try
             {
-                currentPage = await session.LoadPageAsync(url, _cancellationToken);
+                currentPage = await session.LoadPageAsync(url, cancellationToken);
                 results = await ParseHeadHunterPageResultsAsync(currentPage);
             }
             catch (Exception e)

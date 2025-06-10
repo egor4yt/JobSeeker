@@ -58,7 +58,7 @@ public sealed class PlaywrightSession(IBrowserContext browserContext, int maxPar
             await page.GotoAsync(url);
 
             var minWait = TimeSpan.FromSeconds(1);
-            var maxWait = TimeSpan.FromSeconds(3);
+            var maxWait = TimeSpan.FromSeconds(4);
             await Jitter.WaitAsync(minWait, maxWait, cancellationToken);
         }
         finally

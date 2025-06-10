@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Serilog;
 
 namespace JobSeeker.WebScraper.Persistence.Configuration;
@@ -18,16 +19,17 @@ public static class DbInitializer
         try
         {
             var dbContext = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var logger = serviceScope.ServiceProvider.GetRequiredService<ILogger<ApplicationDbContext>>();
             var pendingMigrations = dbContext.Database.GetPendingMigrations().ToList();
-
+           
             if (pendingMigrations.Count != 0)
             {
-                Log.Information("Applying migrations");
+                logger.LogInformation("Applying migrations");
 
                 // only call this method when there are pending migrations
                 dbContext.Database.Migrate();
 
-                Log.Information("Applied {AppliedMigrationsCount} migrations", pendingMigrations.Count);
+                logger.LogInformation("Applied {AppliedMigrationsCount} migrations", pendingMigrations.Count);
             }
         }
         catch (Exception e)

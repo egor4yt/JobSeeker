@@ -5,6 +5,7 @@ using JobSeeker.WebScraper.Application.Jobs.Base;
 using JobSeeker.WebScraper.Application.Services.JobRunner;
 using JobSeeker.WebScraper.Application.Services.PlaywrightFactory;
 using JobSeeker.WebScraper.Application.Services.Proxy;
+using JobSeeker.WebScraper.Application.Services.SearchResultsParsing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -34,8 +35,11 @@ public static class DependencyInjection
 
     private static void AddServices(IServiceCollection services)
     {
-        services.AddSingleton<IProxyFactoryService, LocalProxyFactoryService>();
+        services.AddSingleton<JobRunnerService>();
         services.AddSingleton<PlaywrightFactoryService>();
+        services.AddSingleton<IProxyFactoryService, LocalProxyFactoryService>();
+        services.AddSingleton<ISearchResultsParsingStrategyFactory, SearchResultsParsingStrategyFactory>();
+        services.AddKeyedScoped<ISearchResultsParsingStrategy, HhSearchResultsParsingStrategy>(HhSearchResultsParsingStrategy.Domain);
     }
 
     private static void AddCommands(IServiceCollection services)
@@ -60,8 +64,6 @@ public static class DependencyInjection
             if (type.ServiceType.Count > 1) throw new Exception("Too many command interfaces");
             services.AddTransient(type.ServiceType[0], type.Implementation);
         }
-
-        services.AddSingleton<JobRunnerService>();
     }
 
     private static void AddJobs(IServiceCollection services)
@@ -86,7 +88,5 @@ public static class DependencyInjection
             if (type.ServiceType.Count > 1) throw new Exception("Too many job interfaces");
             services.AddTransient(type.ServiceType[0], type.Implementation);
         }
-
-        services.AddSingleton<JobRunnerService>();
     }
 }

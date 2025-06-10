@@ -74,7 +74,7 @@ public class PlaywrightFactoryService(IProxyFactoryService proxyFactoryService)
                 };
 
             var context = await _browser!.NewContextAsync(contextOptions);
-            newSession = new PlaywrightSession(context, 4, OnSessionDisposedAsync);
+            newSession = new PlaywrightSession(context, 3, OnSessionDisposedAsync);
 
             if (_sessionToProxyMap.TryAdd(newSession.SessionId, new DomainToProxyBinding(domain, proxy)) == false) throw new InvalidOperationException("Duplicate of session ID");
         }

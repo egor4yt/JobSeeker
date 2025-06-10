@@ -23,7 +23,7 @@ try
                   ?? builder.Configuration.GetValue<string>("urls")?.Split(';')
                   ?? [];
 
-    Log.Information("Application listening on {Addresses}", appUrls);
+    app.Logger.LogInformation("Application listening on {Addresses}", appUrls.Select(object? (x) => x));
 
     app.Run();
 }

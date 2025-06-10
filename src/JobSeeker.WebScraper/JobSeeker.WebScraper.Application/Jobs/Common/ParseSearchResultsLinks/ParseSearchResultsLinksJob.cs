@@ -1,6 +1,6 @@
 ﻿using JobSeeker.WebScraper.Application.Jobs.Base;
 using JobSeeker.WebScraper.Application.Jobs.Common.ParseSearchResultsLinks.Models;
-using JobSeeker.WebScraper.Application.Services.PlaywrightFactory;
+using JobSeeker.WebScraper.Application.Services.SearchResultsParsing;
 using JobSeeker.WebScraper.Domain.Entities;
 using JobSeeker.WebScraper.MessageBroker.Producers;
 using JobSeeker.WebScraper.Persistence;
@@ -9,11 +9,11 @@ using Microsoft.Extensions.Logging;
 
 namespace JobSeeker.WebScraper.Application.Jobs.Common.ParseSearchResultsLinks;
 
-public partial class ParseSearchResultsLinksJob(
+public class ParseSearchResultsLinksJob(
     ILogger<ParseSearchResultsLinksJob> logger,
     ApplicationDbContext dbContext,
-    PlaywrightFactoryService playwrightFactory,
-    IMessageProducer<MessageBroker.Messages.ScrapTaskResult.Created> messageProducer
+    IMessageProducer<MessageBroker.Messages.ScrapTaskResult.Created> messageProducer,
+    ISearchResultsParsingStrategyFactory searchResultsParsingStrategyFactory
 ) : IJob<JobParameters.Common.ParseSearchResultsLinks>
 {
     private CancellationToken _cancellationToken = CancellationToken.None;
@@ -49,17 +49,12 @@ public partial class ParseSearchResultsLinksJob(
 
         foreach (var scrapSource in scrapTask.ScrapSources)
         {
-            List<SearchResult> newResults;
-
-            if (scrapSource.Domain.EndsWith("hh.ru")) newResults = await ParseHeadHunterResultsAsync(scrapTask);
-            // else if (scrapSource.Domain.EndsWith("other-domain.com")) newResults = await ParseOtherDomainResultsAsync(scrapTask);
-            else
-            {
-                logger.LogWarning("Unsupported domain {Domain}", scrapSource.Domain);
-                continue;
-            }
-
-            if (newResults.Count == 0) logger.LogWarning("Not found results for domain {Domain}, scrap task {ScrapTaskId}", scrapSource.Domain, _parameter.ScrapTaskId);
+            var strategy = searchResultsParsingStrategyFactory.GetStrategy(scrapSource);
+          
+            var newResults = await strategy.ParseAsync(scrapTask, _cancellationToken);
+            if (newResults.Count == 0)
+                logger.LogWarning("Not found results for domain {Domain}, scrap task {ScrapTaskId}", scrapSource.Domain, _parameter.ScrapTaskId);
+            
             results.AddRange(newResults);
         }
 
