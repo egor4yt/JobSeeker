@@ -16,8 +16,7 @@ and combining duplicates into a single extended job description
 - MassTransit (pub/sub)
 - Hangfire (delayed background tasks)
 - Amazon.S3 (S3 object storage manager)
-- MurmurHash.Net (H
-- TML parsing)
+- MurmurHash.Net (Murmur 32bit hash realization)
 
 ## Data
 - PostgreSQL (OLTP database)
