@@ -1,6 +1,6 @@
 ﻿using JobSeeker.WebScraper.Application.Jobs.Base;
-using JobSeeker.WebScraper.Application.Jobs.Common.ParseSearchResultsLinks.Models;
 using JobSeeker.WebScraper.Application.Services.SearchResultsParsing;
+using JobSeeker.WebScraper.Application.Services.SearchResultsParsing.Models;
 using JobSeeker.WebScraper.Domain.Entities;
 using JobSeeker.WebScraper.MessageBroker.Producers;
 using JobSeeker.WebScraper.Persistence;
@@ -50,6 +50,11 @@ public class ParseSearchResultsLinksJob(
         foreach (var scrapSource in scrapTask.ScrapSources)
         {
             var strategy = searchResultsParsingStrategyFactory.GetStrategy(scrapSource);
+            if (strategy == null)
+            {
+                logger.LogWarning("Unsupported domain {Domain}, scrap task {ScrapTaskId}", scrapSource.Domain, _parameter.ScrapTaskId);
+                continue;
+            }
           
             var newResults = await strategy.ParseAsync(scrapTask, _cancellationToken);
             if (newResults.Count == 0)

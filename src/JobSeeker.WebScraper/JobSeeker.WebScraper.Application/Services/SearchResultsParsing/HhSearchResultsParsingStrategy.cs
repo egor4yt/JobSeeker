@@ -1,6 +1,6 @@
 ﻿using JobSeeker.WebScraper.Application.Jobs.Common.ParseSearchResultsLinks;
-using JobSeeker.WebScraper.Application.Jobs.Common.ParseSearchResultsLinks.Models;
 using JobSeeker.WebScraper.Application.Services.PlaywrightFactory;
+using JobSeeker.WebScraper.Application.Services.SearchResultsParsing.Models;
 using JobSeeker.WebScraper.Domain.Entities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Playwright;
