@@ -41,27 +41,27 @@ public class ParseSearchResultsLinksJob(
 
     private async Task<List<SearchResult>> RunAsync()
     {
-        var scrapTask = await dbContext.ScrapTasks
-            .Include(x => x.ScrapSources)
-            .SingleAsync(x => x.Id == _parameter.ScrapTaskId, _cancellationToken);
+        // var scrapTask = await dbContext.ScrapTasks
+        //     .Include(x => x.ScrapSources)
+        //     .SingleAsync(x => x.Id == _parameter.ScrapTaskId, _cancellationToken);
 
         var results = new List<SearchResult>();
-
-        foreach (var scrapSource in scrapTask.ScrapSources)
-        {
-            var strategy = searchResultsParsingStrategyFactory.GetStrategy(scrapSource);
-            if (strategy == null)
-            {
-                logger.LogWarning("Unsupported domain {Domain}, scrap task {ScrapTaskId}", scrapSource.Domain, _parameter.ScrapTaskId);
-                continue;
-            }
-          
-            var newResults = await strategy.ParseAsync(scrapTask, _cancellationToken);
-            if (newResults.Count == 0)
-                logger.LogWarning("Not found results for domain {Domain}, scrap task {ScrapTaskId}", scrapSource.Domain, _parameter.ScrapTaskId);
-            
-            results.AddRange(newResults);
-        }
+        
+        // foreach (var scrapSource in scrapTask.ScrapSources)
+        // {
+        //     var strategy = searchResultsParsingStrategyFactory.GetStrategy(scrapSource);
+        //     if (strategy == null)
+        //     {
+        //         logger.LogWarning("Unsupported domain {Domain}, scrap task {ScrapTaskId}", scrapSource.Domain, _parameter.ScrapTaskId);
+        //         continue;
+        //     }
+        //   
+        //     var newResults = await strategy.ParseAsync(scrapTask, _cancellationToken);
+        //     if (newResults.Count == 0)
+        //         logger.LogWarning("Not found results for domain {Domain}, scrap task {ScrapTaskId}", scrapSource.Domain, _parameter.ScrapTaskId);
+        //     
+        //     results.AddRange(newResults);
+        // }
 
         return results;
     }

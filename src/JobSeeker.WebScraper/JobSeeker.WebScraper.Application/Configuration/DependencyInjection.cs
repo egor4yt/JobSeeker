@@ -1,7 +1,8 @@
 ﻿using Hangfire;
 using Hangfire.MemoryStorage;
-using JobSeeker.WebScraper.Application.Commands.Base;
+using JobSeeker.WebScraper.Application.Hosted;
 using JobSeeker.WebScraper.Application.Jobs.Base;
+using JobSeeker.WebScraper.Application.Services.DataSeeder;
 using JobSeeker.WebScraper.Application.Services.JobRunner;
 using JobSeeker.WebScraper.Application.Services.PlaywrightFactory;
 using JobSeeker.WebScraper.Application.Services.Proxy;
@@ -17,8 +18,8 @@ public static class DependencyInjection
     {
         ConfigureInfrastructure(app.Services);
         AddServices(app.Services);
-        AddCommands(app.Services);
         AddJobs(app.Services);
+        AddHosted(app.Services);
     }
 
     private static void ConfigureInfrastructure(IServiceCollection services)
@@ -40,30 +41,7 @@ public static class DependencyInjection
         services.AddSingleton<IProxyFactoryService, LocalProxyFactoryService>();
         services.AddSingleton<ISearchResultsParsingStrategyFactory, SearchResultsParsingStrategyFactory>();
         services.AddKeyedScoped<ISearchResultsParsingStrategy, HhSearchResultsParsingStrategy>(HhSearchResultsParsingStrategy.Domain);
-    }
-
-    private static void AddCommands(IServiceCollection services)
-    {
-        var commandHandlerType = typeof(ICommandHandler<>);
-
-        var types = commandHandlerType.Assembly.GetExportedTypes()
-            .Where(t => t
-                .GetInterfaces()
-                .Any(i =>
-                    i.IsGenericType &&
-                    i.GetGenericTypeDefinition() == commandHandlerType
-                ))
-            .Select(t => new
-            {
-                Implementation = t,
-                ServiceType = t.GetInterfaces().Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == commandHandlerType).Take(2).ToList()
-            });
-
-        foreach (var type in types)
-        {
-            if (type.ServiceType.Count > 1) throw new Exception("Too many command interfaces");
-            services.AddTransient(type.ServiceType[0], type.Implementation);
-        }
+        services.AddScoped<IDataSeeder, ScrapGroupSeeder>();
     }
 
     private static void AddJobs(IServiceCollection services)
@@ -88,5 +66,10 @@ public static class DependencyInjection
             if (type.ServiceType.Count > 1) throw new Exception("Too many job interfaces");
             services.AddTransient(type.ServiceType[0], type.Implementation);
         }
+    }
+
+    private static void AddHosted(IServiceCollection services)
+    {
+        services.AddHostedService<DataSeedingHostedService>();
     }
 }

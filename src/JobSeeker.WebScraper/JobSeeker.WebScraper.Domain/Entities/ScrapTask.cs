@@ -3,14 +3,24 @@
 public class ScrapTask
 {
     public int Id { get; set; }
+    public int ScrapGroupId { get; set; }
+    public int ScrapSourceId { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public DateTime? StartedAt { get; set; }
+    public DateTime? CompletedAt { get; set; }
+    public string? ErrorDetails { get; set; }
 
     /// <summary>
-    ///     List of words separated with ','
+    ///     Lower priority tasks are processed sooner
     /// </summary>
-    public string? ExcludeWordsList { get; set; }
+    public int Priority { get; set; }
 
-    public string SearchText { get; set; } = null!;
+    /// <summary>
+    ///     URL to the first page with search results without domain and protocol.
+    /// </summary>
+    public string EntrypointPath { get; set; } = null!;
 
-    public virtual ICollection<ScrapSource> ScrapSources { get; set; } = null!;
+    public virtual ScrapGroup ScrapGroup { get; set; } = null!;
+    public virtual ScrapSource ScrapSource { get; set; } = null!;
     public virtual ICollection<ScrapTaskResult> ScrapTaskResults { get; set; } = null!;
 }

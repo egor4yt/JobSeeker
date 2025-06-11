@@ -16,14 +16,14 @@ public class HhSearchResultsParsingStrategy(ILogger<ParseSearchResultsLinksJob> 
 
     public async Task<IList<SearchResult>> ParseAsync(ScrapTask scrapTask, CancellationToken cancellationToken)
     {
-        logger.LogDebug("Started parsing head hunter results for {SearchText}", scrapTask.SearchText);
+        // logger.LogDebug("Started parsing head hunter results for {SearchText}", scrapTask.SearchText);
 
         var response = new List<SearchResult>();
 
         var query = new Dictionary<string, string[]>
         {
             ["search_field"] = ["name", "company_name", "description"],
-            ["text"] = [Uri.EscapeDataString(scrapTask.SearchText)]
+            // ["text"] = [Uri.EscapeDataString(scrapTask.SearchText)]
         };
 
         var baseUrl = "https://hh.ru/search/vacancy?" + string.Join("&", query.SelectMany(pair => pair.Value.Select(value => $"{pair.Key}={value}")));
@@ -69,7 +69,7 @@ public class HhSearchResultsParsingStrategy(ILogger<ParseSearchResultsLinksJob> 
         var taskResults = await Task.WhenAll(tasks);
         response.AddRange(taskResults.SelectMany(x => x));
 
-        logger.LogDebug("Completed head hunter results for {SearchText}", scrapTask.SearchText);
+        // logger.LogDebug("Completed head hunter results for {SearchText}", scrapTask.SearchText);
         return response;
     }
 

@@ -11,7 +11,8 @@ public class ScrapTaskResultConfiguration : IEntityTypeConfiguration<ScrapTaskRe
         builder
             .HasOne(x => x.ScrapTask)
             .WithMany(x => x.ScrapTaskResults)
-            .HasForeignKey(x => x.ScrapTaskId);
+            .HasForeignKey(x => x.ScrapTaskId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder
             .Property(x => x.Link)
