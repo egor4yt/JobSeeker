@@ -18,8 +18,8 @@ public class DataSeedingHostedService(IServiceProvider serviceProvider, ILogger<
         {
             try
             {
-                await seeder.SeedAsync(cancellationToken);
-                logger.LogInformation("Data seeding type of {SeedType} completed successfully", seeder.GetType().Name);
+                var seeded = await seeder.SeedAsync(cancellationToken);
+                if (seeded) logger.LogInformation("Data seeding type of {SeedType} completed successfully", seeder.GetType().Name);
             }
             catch (Exception ex)
             {

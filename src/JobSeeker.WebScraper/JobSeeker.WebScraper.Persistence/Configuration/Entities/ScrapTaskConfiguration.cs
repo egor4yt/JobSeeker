@@ -13,15 +13,9 @@ public class ScrapTaskConfiguration : IEntityTypeConfiguration<ScrapTask>
             .WithMany(x => x.ScrapTasks)
             .HasForeignKey(x => x.ScrapGroupId)
             .OnDelete(DeleteBehavior.Cascade);
-        
-        builder
-            .HasOne(x => x.ScrapSource)
-            .WithMany(x => x.ScrapTasks)
-            .HasForeignKey(x => x.ScrapSourceId)
-            .OnDelete(DeleteBehavior.Restrict);
 
         builder
-            .Property(x => x.EntrypointPath)
+            .Property(x => x.Entrypoint)
             .HasColumnType("varchar(2048)")
             .IsRequired();
 

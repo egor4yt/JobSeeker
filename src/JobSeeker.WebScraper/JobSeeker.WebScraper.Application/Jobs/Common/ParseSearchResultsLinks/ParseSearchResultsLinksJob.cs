@@ -4,7 +4,6 @@ using JobSeeker.WebScraper.Application.Services.SearchResultsParsing.Models;
 using JobSeeker.WebScraper.Domain.Entities;
 using JobSeeker.WebScraper.MessageBroker.Producers;
 using JobSeeker.WebScraper.Persistence;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace JobSeeker.WebScraper.Application.Jobs.Common.ParseSearchResultsLinks;
@@ -46,7 +45,7 @@ public class ParseSearchResultsLinksJob(
         //     .SingleAsync(x => x.Id == _parameter.ScrapTaskId, _cancellationToken);
 
         var results = new List<SearchResult>();
-        
+
         // foreach (var scrapSource in scrapTask.ScrapSources)
         // {
         //     var strategy = searchResultsParsingStrategyFactory.GetStrategy(scrapSource);

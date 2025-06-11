@@ -22,7 +22,7 @@ public class HhSearchResultsParsingStrategy(ILogger<ParseSearchResultsLinksJob> 
 
         var query = new Dictionary<string, string[]>
         {
-            ["search_field"] = ["name", "company_name", "description"],
+            ["search_field"] = ["name", "company_name", "description"]
             // ["text"] = [Uri.EscapeDataString(scrapTask.SearchText)]
         };
 

@@ -16,7 +16,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\JobSeeker.WebScraper.MessageBroker.Consumers\JobSeeker.WebScraper.MessageBroker.Consumers.csproj"/>
-        <ProjectReference Include="..\JobSeeker.WebScraper.MessageBroker.Producers\JobSeeker.WebScraper.MessageBroker.Producers.csproj" />
+        <ProjectReference Include="..\JobSeeker.WebScraper.MessageBroker.Producers\JobSeeker.WebScraper.MessageBroker.Producers.csproj"/>
     </ItemGroup>
 
 </Project>

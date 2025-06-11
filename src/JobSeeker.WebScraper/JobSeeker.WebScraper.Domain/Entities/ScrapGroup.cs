@@ -7,7 +7,7 @@ public class ScrapGroup
     ///     Lower priority tasks are processed sooner
     /// </summary>
     public int Priority { get; set; }
-    
+
     public int OccupationGroup { get; set; }
     public int? Occupation { get; set; }
     public int? Specialization { get; set; }

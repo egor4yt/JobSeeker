@@ -32,9 +32,9 @@ public class UploadSearchResultsJob(
         stopWatch.Start();
         await RunAsync();
         stopWatch.Stop();
-        
+
         logger.LogInformation("Finished uploading scrap task results {ScrapTaskId} for {ElapsedMilliseconds}ms", _parameter.ScrapTaskId, stopWatch.ElapsedMilliseconds);
-        
+
         var message = new MessageBroker.Messages.ScrapTask.Completed
         {
             ScrapTaskId = _parameter.ScrapTaskId

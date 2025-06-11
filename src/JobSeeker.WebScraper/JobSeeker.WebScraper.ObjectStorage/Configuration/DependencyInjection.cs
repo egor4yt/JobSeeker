@@ -1,5 +1,4 @@
 ﻿using Amazon.S3;
-using Amazon.S3.Model;
 using JobSeeker.WebScraper.Shared;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,14 +26,14 @@ public static class DependencyInjection
                     Log.Warning("Object storage broker disabled: environment variable '{ConnectionString}' was null", ConfigurationKeys.ObjectStorageConnectionString);
                     return;
                 }
-                
+
                 var connectionStringParts = connectionString.Value.Split(';');
                 if (connectionStringParts.Length != 3)
                 {
                     Log.Warning("Object storage broker disabled: environment variable '{ConnectionString}' was incorrect formate (host;user;password)", ConfigurationKeys.ObjectStorageConnectionString);
                     return;
                 }
-                
+
                 services.AddSingleton<IAmazonS3>(_ =>
                 {
                     var config = new AmazonS3Config

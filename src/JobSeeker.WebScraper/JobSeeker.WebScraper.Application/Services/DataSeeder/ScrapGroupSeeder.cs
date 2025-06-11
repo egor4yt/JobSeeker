@@ -1,13 +1,12 @@
 ﻿using JobSeeker.WebScraper.Domain.Entities;
 using JobSeeker.WebScraper.Persistence;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace JobSeeker.WebScraper.Application.Services.DataSeeder;
 
-public class ScrapGroupSeeder(ApplicationDbContext dbContext, ILogger<ScrapGroupSeeder> logger) : IDataSeeder
+public class ScrapGroupSeeder(ApplicationDbContext dbContext) : IDataSeeder
 {
-    public async Task SeedAsync(CancellationToken cancellationToken = default)
+    public async Task<bool> SeedAsync(CancellationToken cancellationToken = default)
     {
         var data = GetData();
         var newGroups = new List<ScrapGroup>();
@@ -32,7 +31,11 @@ public class ScrapGroupSeeder(ApplicationDbContext dbContext, ILogger<ScrapGroup
         {
             await dbContext.ScrapGroups.AddRangeAsync(newGroups, cancellationToken);
             await dbContext.SaveChangesAsync(cancellationToken);
+
+            return true;
         }
+
+        return false;
     }
 
     private static List<ScrapGroup> GetData()
