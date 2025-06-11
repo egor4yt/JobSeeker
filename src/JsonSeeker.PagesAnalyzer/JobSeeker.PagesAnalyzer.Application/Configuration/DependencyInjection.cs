@@ -1,6 +1,7 @@
 ﻿using Hangfire;
 using Hangfire.MemoryStorage;
 using JobSeeker.PagesAnalyzer.Application.Jobs.Base;
+using JobSeeker.PagesAnalyzer.Application.Services.AnalyzeStrategy;
 using JobSeeker.PagesAnalyzer.Application.Services.JobRunner;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -25,6 +26,8 @@ public static class DependencyInjection
                 .UseMemoryStorage();
         });
         services.AddHangfireServer();
+        services.AddSingleton<IAnalyzeStrategyFactory, AnalyzeStrategyFactory>();
+        services.AddKeyedScoped<IAnalyzeStrategy, HhAnalyzeStrategy>(HhAnalyzeStrategy.Domain);
     }
 
     private static void AddJobs(IServiceCollection services)

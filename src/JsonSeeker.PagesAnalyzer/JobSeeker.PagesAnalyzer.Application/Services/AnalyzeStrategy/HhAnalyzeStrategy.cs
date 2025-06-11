@@ -1,13 +1,18 @@
 ﻿using System.Text;
 using HtmlAgilityPack;
-using JobSeeker.PagesAnalyzer.Application.Jobs.Common.AnalyzeScrapTaskResults.Models;
+using JobSeeker.PagesAnalyzer.Application.Services.AnalyzeStrategy.Models;
 using Microsoft.Extensions.Logging;
 
-namespace JobSeeker.PagesAnalyzer.Application.Jobs.Common.AnalyzeScrapTaskResults;
+namespace JobSeeker.PagesAnalyzer.Application.Services.AnalyzeStrategy;
 
-public partial class AnalyzeScrapTaskResultsJob
+/// <summary>
+///     Represents the strategy for analyzing HTML content from the hh.ru domain to extract vacancy details.
+/// </summary>
+public class HhAnalyzeStrategy(ILogger<HhAnalyzeStrategy> logger) : IAnalyzeStrategy
 {
-    private Task<Vacancy> GetHeadHunterVacancyAsync(Stream htmlContent)
+    public const string Domain = "hh.ru";
+
+    public Task<Vacancy> AnalyzeAsync(Stream htmlContent, CancellationToken cancellationToken)
     {
         var response = new Vacancy();
 

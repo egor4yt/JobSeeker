@@ -7,6 +7,9 @@ using Microsoft.Playwright;
 
 namespace JobSeeker.WebScraper.Application.Services.SearchResultsParsing;
 
+/// <summary>
+///     Implements the strategy for parsing search results from the "hh.ru" domain.
+/// </summary>
 public class HhSearchResultsParsingStrategy(ILogger<ParseSearchResultsLinksJob> logger, PlaywrightFactoryService playwrightFactory) : ISearchResultsParsingStrategy
 {
     public const string Domain = "hh.ru";

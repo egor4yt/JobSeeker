@@ -1,4 +1,4 @@
-﻿namespace JobSeeker.PagesAnalyzer.Application.Jobs.Common.AnalyzeScrapTaskResults.Models;
+﻿namespace JobSeeker.PagesAnalyzer.Application.Services.AnalyzeStrategy.Models;
 
 public class Vacancy
 {

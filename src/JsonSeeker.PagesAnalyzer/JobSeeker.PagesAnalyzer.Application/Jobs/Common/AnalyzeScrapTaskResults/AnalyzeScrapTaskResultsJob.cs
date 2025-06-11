@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using JobSeeker.PagesAnalyzer.Application.Jobs.Base;
-using JobSeeker.PagesAnalyzer.Application.Jobs.Common.AnalyzeScrapTaskResults.Models;
+using JobSeeker.PagesAnalyzer.Application.Services.AnalyzeStrategy;
+using JobSeeker.PagesAnalyzer.Application.Services.AnalyzeStrategy.Models;
 using JobSeeker.PagesAnalyzer.MessageBroker.Producers;
 using JobSeeker.PagesAnalyzer.ObjectStorage;
 using JobSeeker.PagesAnalyzer.ObjectStorage.Models;
@@ -8,10 +9,11 @@ using Microsoft.Extensions.Logging;
 
 namespace JobSeeker.PagesAnalyzer.Application.Jobs.Common.AnalyzeScrapTaskResults;
 
-public partial class AnalyzeScrapTaskResultsJob(
+public class AnalyzeScrapTaskResultsJob(
     ILogger<AnalyzeScrapTaskResultsJob> logger,
     IObjectStorage objectStorage,
-    IMessageProducer<MessageBroker.Messages.ScrapTask.Analyzed> producer
+    IMessageProducer<MessageBroker.Messages.ScrapTask.Analyzed> producer,
+    IAnalyzeStrategyFactory analyzeStrategyFactory
 ) : IJob<JobParameters.Common.AnalyzeScrapTaskResults>
 {
     /// <summary>
@@ -72,16 +74,14 @@ public partial class AnalyzeScrapTaskResultsJob(
 
             var objectKeyParts = objectKey.Split('/');
             var domain = objectKeyParts[1];
-            Vacancy vacancy;
-
-            if (domain.EndsWith("hh.ru")) vacancy = await GetHeadHunterVacancyAsync(stream);
-            // else if (domain.EndsWith("other-domain.com")) newResponseItem = await GetOtherDomainVacancyAsync(scrapTask);
-            else
+            var strategy = analyzeStrategyFactory.GetStrategy(domain);
+            if (strategy == null)
             {
-                logger.LogWarning("Unsupported domain {Domain}", domain);
+                logger.LogWarning("Unsupported domain {Domain}, scrap task {ScrapTaskId}", domain, _parameter.ScrapTaskId);
                 return;
             }
 
+            var vacancy = await strategy.AnalyzeAsync(stream, _cancellationToken);
             vacancy.Url = "https://" + string.Join('/', objectKeyParts.Skip(1))[..^5];
 
             await UploadVacanciesDetailsAsync(vacancy, objectKeyParts);
