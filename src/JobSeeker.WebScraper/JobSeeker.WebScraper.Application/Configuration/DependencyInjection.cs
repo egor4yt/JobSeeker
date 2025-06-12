@@ -39,13 +39,15 @@ public static class DependencyInjection
                     {
                         QueuePollInterval = TimeSpan.FromSeconds(15),
                         PrepareSchemaIfNecessary = true,
-                        SchemaName = "hangfire"
+                        SchemaName = "hangfire",
+                        InvisibilityTimeout = TimeSpan.FromHours(3)
                     });
         });
         services.AddHangfireServer(options =>
         {
             options.Queues = [JobQueue.ScrapGroups, JobQueue.ScrapTasks];
             options.WorkerCount = 3;
+            options.ServerTimeout = TimeSpan.FromHours(3);
         });
     }
 

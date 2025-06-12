@@ -73,7 +73,7 @@ public class AnalyzeScrapTaskResultsJob(
             await using var stream = await objectStorage.GetObjectStreamAsync(getObjectRequest, _cancellationToken);
 
             var objectKeyParts = objectKey.Split('/');
-            var domain = objectKeyParts[1];
+            var domain = objectKeyParts[5];
             var strategy = analyzeStrategyFactory.GetStrategy(domain);
             if (strategy == null)
             {
@@ -82,7 +82,6 @@ public class AnalyzeScrapTaskResultsJob(
             }
 
             var vacancy = await strategy.AnalyzeAsync(stream, _cancellationToken);
-            vacancy.Url = "https://" + string.Join('/', objectKeyParts.Skip(1))[..^5];
 
             await UploadVacanciesDetailsAsync(vacancy, objectKeyParts);
 

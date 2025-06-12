@@ -10,15 +10,31 @@ public class AnalyzeStrategyFactory(IServiceScopeFactory serviceScopeFactory) : 
         using var scope = serviceScopeFactory.CreateScope();
         var logger = scope.ServiceProvider.GetRequiredService<ILogger<AnalyzeStrategyFactory>>();
 
-        try
+        var fullDomainParts = domain.Split('.');
+        var domains = new List<string>();
+        for (var i = 0; i < fullDomainParts.Length - 1; i++)
         {
-            return scope.ServiceProvider.GetRequiredKeyedService<IAnalyzeStrategy>(domain);
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Can't get IAnalyzeStrategy");
+            var newDomain = fullDomainParts.Skip(i).Aggregate((x, y) => $"{x}.{y}");
+            domains.Add(newDomain);
         }
 
-        return null;
+        IAnalyzeStrategy? strategy = null;
+
+        foreach (var currentDomain in domains)
+        {
+            try
+            {
+                strategy = scope.ServiceProvider.GetRequiredKeyedService<IAnalyzeStrategy>(currentDomain);
+                break;
+            }
+            catch
+            {
+                // ignored
+            }
+        }
+
+        if (strategy == null) logger.LogWarning("Can't get IAnalyzeStrategy for domain {Domain}", domain);
+
+        return strategy;
     }
 }
