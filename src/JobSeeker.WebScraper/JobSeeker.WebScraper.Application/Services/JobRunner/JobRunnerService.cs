@@ -36,6 +36,9 @@ public class JobRunnerService(IServiceProvider serviceProvider)
 
         using (logger.BeginScope(scopeData))
         {
+            Exception? exception = null;
+            var delay = TimeSpan.FromSeconds(30);
+
             try
             {
                 logger.LogInformation("Started job type of {JobParameterType}", job.GetType().Name);
@@ -46,26 +49,30 @@ public class JobRunnerService(IServiceProvider serviceProvider)
             }
             catch (TimeoutException e)
             {
-                jobClient.Schedule(
-                    () => RunAsync(parameter, null!, CancellationToken.None),
-                    TimeSpan.FromMinutes(5));
-
-                logger.LogError("Job failed: {FailureReason}", e.Message);
-                throw;
+                exception = e;
+                delay = TimeSpan.FromMinutes(5);
             }
             catch (NoAvailableProxyException e)
             {
-                jobClient.Schedule(
-                    () => RunAsync(parameter, null!, CancellationToken.None),
-                    TimeSpan.FromMinutes(5));
-
-                logger.LogError("Job failed: {FailureReason}", e.Message);
-                throw;
+                exception = e;
+                delay = TimeSpan.FromMinutes(5);
             }
             catch (Exception e)
             {
                 logger.LogError(e, "Job failed without restart");
                 throw;
+            }
+
+            if (exception != null)
+            {
+                jobClient.Schedule(
+                    context.BackgroundJob.Job.Queue,
+                    () => RunAsync(parameter, null!, CancellationToken.None),
+                    delay);
+
+                logger.LogWarning("Job failed: {FailureReason}", exception.Message);
+
+                throw exception;
             }
         }
     }

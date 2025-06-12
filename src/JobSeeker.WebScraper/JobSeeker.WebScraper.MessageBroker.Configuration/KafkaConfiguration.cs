@@ -32,6 +32,7 @@ internal static class KafkaConfiguration
     {
         config.AddProducer<Messages.ScrapTaskResult.Created>("scrap-task-result-created");
         config.AddProducer<Messages.ScrapTask.Completed>("scrap-task-completed");
+        config.AddProducer<Messages.ScrapTask.Created>("scrap-task-created");
     }
 
     private static void ConfigureTopics(IRiderRegistrationContext context, IKafkaFactoryConfigurator config)
@@ -48,6 +49,13 @@ internal static class KafkaConfiguration
             e.CheckpointInterval = TimeSpan.FromSeconds(1);
             e.AutoOffsetReset = AutoOffsetReset.Earliest;
             e.ConfigureConsumer<Consumers.ScrapTaskResult.Created>(context);
+        });
+
+        config.TopicEndpoint<Null, Messages.ScrapTask.Created>("scrap-task-created", "scrap-task-created-group", e =>
+        {
+            e.CheckpointInterval = TimeSpan.FromSeconds(1);
+            e.AutoOffsetReset = AutoOffsetReset.Earliest;
+            e.ConfigureConsumer<Consumers.ScrapTask.Created>(context);
         });
     }
 }

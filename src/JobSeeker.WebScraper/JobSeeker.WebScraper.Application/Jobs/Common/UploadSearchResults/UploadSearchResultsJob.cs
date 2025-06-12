@@ -45,6 +45,7 @@ public class UploadSearchResultsJob(
     private async Task RunAsync()
     {
         var scrapTaskResults = await dbContext.ScrapTaskResults
+            .Include(x => x.ScrapTask.ScrapGroup)
             .Where(x => x.ScrapTaskId == _parameter.ScrapTaskId
                         && x.Uploaded == false)
             .ToListAsync(_cancellationToken);
@@ -86,7 +87,12 @@ public class UploadSearchResultsJob(
                         var fileOptions = new PutObjectOptions
                         {
                             Bucket = Buckets.WebScraper,
-                            Path = $"{_parameter.ScrapTaskId}/{uri.Host}/{string.Join('/', pathParts.Take(pathParts.Count - 1))}",
+                            Path = $"{_parameter.ScrapTaskId}" +
+                                   $"/{scrapTaskResult.ScrapTask.ScrapGroup.OccupationGroup}" +
+                                   $"/{(scrapTaskResult.ScrapTask.ScrapGroup.Occupation.HasValue ? scrapTaskResult.ScrapTask.ScrapGroup.Occupation : "_")}" +
+                                   $"/{(scrapTaskResult.ScrapTask.ScrapGroup.Specialization.HasValue ? scrapTaskResult.ScrapTask.ScrapGroup.Specialization : "_")}" +
+                                   $"/{(scrapTaskResult.ScrapTask.ScrapGroup.SkillTag.HasValue ? scrapTaskResult.ScrapTask.ScrapGroup.SkillTag : "_")}" +
+                                   $"/{uri.Host}",
                             FileName = $"{pathParts.Last()}.html",
                             ContentType = "text/html; charset=utf-8",
                             FileStream = pageContent
@@ -116,6 +122,7 @@ public class UploadSearchResultsJob(
     {
         var page = await session.LoadPageAsync(url, _cancellationToken);
         var bytes = Encoding.UTF8.GetBytes(await page.ContentAsync());
+        await page.CloseAsync();
         return new MemoryStream(bytes);
     }
 }

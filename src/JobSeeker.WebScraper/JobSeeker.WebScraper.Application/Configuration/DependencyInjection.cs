@@ -1,5 +1,5 @@
 ﻿using Hangfire;
-using Hangfire.MemoryStorage;
+using Hangfire.PostgreSql;
 using JobSeeker.WebScraper.Application.Hosted;
 using JobSeeker.WebScraper.Application.Jobs.Base;
 using JobSeeker.WebScraper.Application.Services.DataSeeder;
@@ -7,6 +7,9 @@ using JobSeeker.WebScraper.Application.Services.JobRunner;
 using JobSeeker.WebScraper.Application.Services.PlaywrightFactory;
 using JobSeeker.WebScraper.Application.Services.Proxy;
 using JobSeeker.WebScraper.Application.Services.SearchResultsParsing;
+using JobSeeker.WebScraper.Shared;
+using JobSeeker.WebScraper.Shared.Constants;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -16,22 +19,34 @@ public static class DependencyInjection
 {
     public static void ConfigureApplication(this IHostApplicationBuilder app)
     {
-        ConfigureInfrastructure(app.Services);
+        ConfigureInfrastructure(app.Services, app.Configuration);
         AddServices(app.Services);
         AddJobs(app.Services);
         AddHosted(app.Services);
     }
 
-    private static void ConfigureInfrastructure(IServiceCollection services)
+    private static void ConfigureInfrastructure(IServiceCollection services, IConfiguration appConfiguration)
     {
         services.AddHangfire((provider, configuration) =>
         {
+            var connectionString = appConfiguration.GetConnectionString(ConfigurationKeys.DatabaseConnectionString);
             configuration
                 .UseSimpleAssemblyNameTypeSerializer()
                 .UseRecommendedSerializerSettings()
-                .UseMemoryStorage();
+                .UseFilter(new AutomaticRetryAttribute { Attempts = 0 })
+                .UsePostgreSqlStorage(x => x.UseNpgsqlConnection(connectionString),
+                    new PostgreSqlStorageOptions
+                    {
+                        QueuePollInterval = TimeSpan.FromSeconds(15),
+                        PrepareSchemaIfNecessary = true,
+                        SchemaName = "hangfire"
+                    });
         });
-        services.AddHangfireServer();
+        services.AddHangfireServer(options =>
+        {
+            options.Queues = [JobQueue.ScrapGroups, JobQueue.ScrapTasks];
+            options.WorkerCount = 3;
+        });
     }
 
     private static void AddServices(IServiceCollection services)
@@ -71,5 +86,6 @@ public static class DependencyInjection
     private static void AddHosted(IServiceCollection services)
     {
         services.AddHostedService<DataSeedingHostedService>();
+        services.AddHostedService<ScrapingScheduler>();
     }
 }

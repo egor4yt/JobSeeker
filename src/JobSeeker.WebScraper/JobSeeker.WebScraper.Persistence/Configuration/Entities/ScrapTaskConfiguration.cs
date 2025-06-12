@@ -21,8 +21,7 @@ public class ScrapTaskConfiguration : IEntityTypeConfiguration<ScrapTask>
 
         builder
             .Property(x => x.ErrorDetails)
-            .HasColumnType("text")
-            .IsRequired();
+            .HasColumnType("text");
 
         builder.HasIndex(x => x.Priority, "IX_ScrapTask_Priority");
     }

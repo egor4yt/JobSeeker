@@ -3,6 +3,7 @@ using System;
 using JobSeeker.WebScraper.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace JobSeeker.WebScraper.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250612094352_FixedScrapTaskErrorDetails")]
+    partial class FixedScrapTaskErrorDetails
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -95,31 +98,6 @@ namespace JobSeeker.WebScraper.Persistence.Migrations
                     b.ToTable("ScrapTasks");
                 });
 
-            modelBuilder.Entity("JobSeeker.WebScraper.Domain.Entities.ScrapTaskConfiguration", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Entrypoint")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("Priority")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("ScrapGroupId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ScrapGroupId");
-
-                    b.ToTable("ScrapTaskConfigurations");
-                });
-
             modelBuilder.Entity("JobSeeker.WebScraper.Domain.Entities.ScrapTaskResult", b =>
                 {
                     b.Property<int>("Id")
@@ -157,17 +135,6 @@ namespace JobSeeker.WebScraper.Persistence.Migrations
                     b.Navigation("ScrapGroup");
                 });
 
-            modelBuilder.Entity("JobSeeker.WebScraper.Domain.Entities.ScrapTaskConfiguration", b =>
-                {
-                    b.HasOne("JobSeeker.WebScraper.Domain.Entities.ScrapGroup", "ScrapGroup")
-                        .WithMany("ScrapTaskConfigurations")
-                        .HasForeignKey("ScrapGroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ScrapGroup");
-                });
-
             modelBuilder.Entity("JobSeeker.WebScraper.Domain.Entities.ScrapTaskResult", b =>
                 {
                     b.HasOne("JobSeeker.WebScraper.Domain.Entities.ScrapTask", "ScrapTask")
@@ -181,8 +148,6 @@ namespace JobSeeker.WebScraper.Persistence.Migrations
 
             modelBuilder.Entity("JobSeeker.WebScraper.Domain.Entities.ScrapGroup", b =>
                 {
-                    b.Navigation("ScrapTaskConfigurations");
-
                     b.Navigation("ScrapTasks");
                 });
 

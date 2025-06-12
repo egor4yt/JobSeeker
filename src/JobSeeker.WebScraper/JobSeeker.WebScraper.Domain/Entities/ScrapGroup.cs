@@ -13,4 +13,5 @@ public class ScrapGroup
     public int? Specialization { get; set; }
     public int? SkillTag { get; set; }
     public virtual ICollection<ScrapTask> ScrapTasks { get; set; } = null!;
+    public virtual ICollection<ScrapTaskConfiguration> ScrapTaskConfigurations { get; set; } = null!;
 }

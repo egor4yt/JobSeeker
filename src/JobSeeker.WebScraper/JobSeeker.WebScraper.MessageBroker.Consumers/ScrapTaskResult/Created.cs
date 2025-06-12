@@ -1,5 +1,6 @@
 ﻿using Hangfire;
 using JobSeeker.WebScraper.Application.Services.JobRunner;
+using JobSeeker.WebScraper.Shared.Constants;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 
@@ -14,6 +15,6 @@ public class Created(ILogger<Created> logger, IBackgroundJobClient jobClient) : 
         {
             ScrapTaskId = context.Message.ScrapTaskId
         };
-        jobClient.Enqueue<JobRunnerService>(x => x.RunAsync(parameter, null!, CancellationToken.None));
+        jobClient.Enqueue<JobRunnerService>(JobQueue.ScrapTasks, x => x.RunAsync(parameter, null!, CancellationToken.None));
     }
 }

@@ -8,6 +8,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<ScrapTask> ScrapTasks { get; set; }
     public DbSet<ScrapGroup> ScrapGroups { get; set; }
     public DbSet<ScrapTaskResult> ScrapTaskResults { get; set; }
+    public DbSet<ScrapTaskConfiguration> ScrapTaskConfigurations { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

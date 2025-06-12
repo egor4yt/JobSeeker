@@ -20,23 +20,15 @@ public class HhSearchResultsParsingStrategy(ILogger<ParseSearchResultsLinksJob> 
 
         var response = new List<SearchResult>();
 
-        var query = new Dictionary<string, string[]>
-        {
-            ["search_field"] = ["name", "company_name", "description"]
-            // ["text"] = [Uri.EscapeDataString(scrapTask.SearchText)]
-        };
-
-        var baseUrl = "https://hh.ru/search/vacancy?" + string.Join("&", query.SelectMany(pair => pair.Value.Select(value => $"{pair.Key}={value}")));
-
         await using var session = await playwrightFactory.CreateSessionAsync("hh.ru", cancellationToken);
 
-        var page = await session.LoadPageAsync(baseUrl, cancellationToken);
+        var page = await session.LoadPageAsync(scrapTask.Entrypoint, cancellationToken);
         var lastPagerItem = page.Locator("a[data-qa='pager-page']").Last;
 
         if (await lastPagerItem.CountAsync() == 0
             || int.TryParse(await lastPagerItem.TextContentAsync(), out var lastPage) == false)
         {
-            logger.LogWarning("Can't find last page number {Url}", baseUrl);
+            logger.LogWarning("Can't find last page number {Url}", scrapTask.Entrypoint);
             return await ParseHeadHunterPageResultsAsync(page);
         }
 
@@ -45,7 +37,7 @@ public class HhSearchResultsParsingStrategy(ILogger<ParseSearchResultsLinksJob> 
 
         var tasks = Enumerable.Range(1, lastPage - 1).Select(async x =>
         {
-            var url = baseUrl + $"&page={x}";
+            var url = scrapTask.Entrypoint + $"&page={x}";
             List<SearchResult> results = [];
             IPage? currentPage = null;
 

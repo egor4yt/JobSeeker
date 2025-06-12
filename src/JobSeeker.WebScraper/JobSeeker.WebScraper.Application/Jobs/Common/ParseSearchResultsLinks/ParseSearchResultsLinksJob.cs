@@ -4,6 +4,7 @@ using JobSeeker.WebScraper.Application.Services.SearchResultsParsing.Models;
 using JobSeeker.WebScraper.Domain.Entities;
 using JobSeeker.WebScraper.MessageBroker.Producers;
 using JobSeeker.WebScraper.Persistence;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace JobSeeker.WebScraper.Application.Jobs.Common.ParseSearchResultsLinks;
@@ -36,33 +37,51 @@ public class ParseSearchResultsLinksJob(
             ScrapTaskId = _parameter.ScrapTaskId
         };
         await messageProducer.ProduceAsync(message, _cancellationToken);
+
+        await dbContext.ScrapTasks
+            .Where(x => x.Id == _parameter.ScrapTaskId)
+            .ExecuteUpdateAsync(x => x
+                .SetProperty(p => p.CompletedAt, DateTime.UtcNow)
+                .SetProperty(p => p.ErrorDetails, string.Empty), _cancellationToken);
     }
 
     private async Task<List<SearchResult>> RunAsync()
     {
-        // var scrapTask = await dbContext.ScrapTasks
-        //     .Include(x => x.ScrapSources)
-        //     .SingleAsync(x => x.Id == _parameter.ScrapTaskId, _cancellationToken);
+        try
+        {
+            await dbContext.ScrapTasks
+                .Where(x => x.Id == _parameter.ScrapTaskId)
+                .ExecuteUpdateAsync(x => x.SetProperty(p => p.StartedAt, DateTime.UtcNow), _cancellationToken);
 
-        var results = new List<SearchResult>();
+            var scrapTask = await dbContext.ScrapTasks
+                .FirstAsync(x => x.Id == _parameter.ScrapTaskId, _cancellationToken);
+            
+            var url = new Uri(scrapTask.Entrypoint);
+            var domain = url.Host.Split('.').TakeLast(2).Aggregate((x, y) => $"{x}.{y}");
+            var strategy = searchResultsParsingStrategyFactory.GetStrategy(domain);
+            if (strategy == null)
+            {
+                logger.LogWarning("Unsupported domain {Domain}, scrap task {ScrapTaskId}", domain, _parameter.ScrapTaskId);
+                return [];
+            }
 
-        // foreach (var scrapSource in scrapTask.ScrapSources)
-        // {
-        //     var strategy = searchResultsParsingStrategyFactory.GetStrategy(scrapSource);
-        //     if (strategy == null)
-        //     {
-        //         logger.LogWarning("Unsupported domain {Domain}, scrap task {ScrapTaskId}", scrapSource.Domain, _parameter.ScrapTaskId);
-        //         continue;
-        //     }
-        //   
-        //     var newResults = await strategy.ParseAsync(scrapTask, _cancellationToken);
-        //     if (newResults.Count == 0)
-        //         logger.LogWarning("Not found results for domain {Domain}, scrap task {ScrapTaskId}", scrapSource.Domain, _parameter.ScrapTaskId);
-        //     
-        //     results.AddRange(newResults);
-        // }
+            var results = await strategy.ParseAsync(scrapTask, _cancellationToken);
+            if (results.Count == 0)
+                logger.LogWarning("Not found results for domain {Domain}, scrap task {ScrapTaskId}", domain, _parameter.ScrapTaskId);
 
-        return results;
+            return results.ToList();
+        }
+        catch (Exception e)
+        {
+            await dbContext.ScrapTasks
+                .Where(x => x.Id == _parameter.ScrapTaskId)
+                .ExecuteUpdateAsync(x => 
+                    x
+                        .SetProperty(p => p.ErrorDetails, e.Message)
+                        .SetProperty(p => p.CompletedAt, DateTime.UtcNow), _cancellationToken);
+
+            throw;
+        }
     }
 
     private async Task SaveResultsAsync(IList<SearchResult> results)

@@ -9,7 +9,7 @@ public class DataSeedingHostedService(IServiceProvider serviceProvider, ILogger<
 {
     public async Task StartAsync(CancellationToken cancellationToken)
     {
-        logger.LogInformation("Starting data seeding...");
+        logger.LogInformation("Starting data seeding");
 
         using var scope = serviceProvider.CreateScope();
         var seeders = scope.ServiceProvider.GetRequiredService<IEnumerable<IDataSeeder>>();
