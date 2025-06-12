@@ -55,7 +55,7 @@ public class ParseSearchResultsLinksJob(
 
             var scrapTask = await dbContext.ScrapTasks
                 .FirstAsync(x => x.Id == _parameter.ScrapTaskId, _cancellationToken);
-            
+
             var url = new Uri(scrapTask.Entrypoint);
             var domain = url.Host.Split('.').TakeLast(2).Aggregate((x, y) => $"{x}.{y}");
             var strategy = searchResultsParsingStrategyFactory.GetStrategy(domain);
@@ -75,7 +75,7 @@ public class ParseSearchResultsLinksJob(
         {
             await dbContext.ScrapTasks
                 .Where(x => x.Id == _parameter.ScrapTaskId)
-                .ExecuteUpdateAsync(x => 
+                .ExecuteUpdateAsync(x =>
                     x
                         .SetProperty(p => p.ErrorDetails, e.Message)
                         .SetProperty(p => p.CompletedAt, DateTime.UtcNow), _cancellationToken);

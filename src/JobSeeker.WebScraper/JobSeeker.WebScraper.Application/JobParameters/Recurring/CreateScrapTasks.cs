@@ -4,5 +4,4 @@ namespace JobSeeker.WebScraper.Application.JobParameters.Recurring;
 
 public class CreateScrapTasks : IJobParameter
 {
-    
 }
