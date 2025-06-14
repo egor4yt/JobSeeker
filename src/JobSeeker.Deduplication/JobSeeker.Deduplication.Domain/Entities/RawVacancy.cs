@@ -16,5 +16,7 @@ public class RawVacancy
     /// <summary>
     ///     S3 root location
     /// </summary>
-    public int DownloadKey { get; set; }
+    public string DownloadKey { get; set; } = null!;
+
+    public string Fingerprint { get; set; } = null!;
 }

@@ -37,17 +37,17 @@ public static class DependencyInjection
                 .UsePostgreSqlStorage(x => x.UseNpgsqlConnection(connectionString),
                     new PostgreSqlStorageOptions
                     {
-                        QueuePollInterval = TimeSpan.FromSeconds(15),
-                        PrepareSchemaIfNecessary = true,
                         SchemaName = "hangfire",
-                        InvisibilityTimeout = TimeSpan.FromHours(3)
+                        PrepareSchemaIfNecessary = true,
+                        InvisibilityTimeout = TimeSpan.FromHours(3),
+                        QueuePollInterval = TimeSpan.FromSeconds(15)
                     });
         });
         services.AddHangfireServer(options =>
         {
-            options.Queues = [JobQueue.ScrapGroups, JobQueue.ScrapTasks];
             options.WorkerCount = 3;
             options.ServerTimeout = TimeSpan.FromHours(3);
+            options.Queues = [JobQueue.ScrapGroups, JobQueue.ScrapTasks];
         });
     }
 

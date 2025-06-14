@@ -40,8 +40,13 @@ namespace JobSeeker.Deduplication.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("DownloadKey")
-                        .HasColumnType("integer");
+                    b.Property<string>("DownloadKey")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Fingerprint")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Location")
                         .HasColumnType("varchar(64)");

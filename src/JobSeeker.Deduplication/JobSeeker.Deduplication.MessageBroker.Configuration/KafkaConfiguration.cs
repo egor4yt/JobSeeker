@@ -40,5 +40,11 @@ internal static class KafkaConfiguration
             e.AutoOffsetReset = AutoOffsetReset.Earliest;
             e.ConfigureConsumer<Consumers.HealthCheck.Perform>(context);
         });
+        config.TopicEndpoint<Null, Messages.ScrapTask.Analyzed>("scrap-task-analyzed", "scrap-task-analyzed-group", e =>
+        {
+            e.CheckpointInterval = TimeSpan.FromSeconds(1);
+            e.AutoOffsetReset = AutoOffsetReset.Earliest;
+            e.ConfigureConsumer<Consumers.ScrapTask.Analyzed>(context);
+        });
     }
 }

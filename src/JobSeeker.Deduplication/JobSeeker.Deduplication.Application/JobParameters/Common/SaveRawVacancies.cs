@@ -2,7 +2,7 @@
 
 namespace JobSeeker.Deduplication.Application.JobParameters.Common;
 
-public class UploadSearchResults : JobParameter
+public class SaveRawVacancies : JobParameter
 {
     public int ScrapTaskId { get; set; }
 }

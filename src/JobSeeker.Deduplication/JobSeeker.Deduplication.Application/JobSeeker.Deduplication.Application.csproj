@@ -12,7 +12,7 @@
         <PackageReference Include="Hangfire.MemoryStorage" Version="1.8.1.1"/>
         <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.4"/>
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.4"/>
-        <PackageReference Include="MurmurHash.Net" Version="0.0.2" />
+        <PackageReference Include="MurmurHash.Net" Version="0.0.2"/>
     </ItemGroup>
 
     <ItemGroup>

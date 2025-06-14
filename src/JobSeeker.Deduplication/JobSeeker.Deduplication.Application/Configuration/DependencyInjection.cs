@@ -1,8 +1,11 @@
 ﻿using Hangfire;
 using Hangfire.MemoryStorage;
-using JobSeeker.Deduplication.Application.Commands.Base;
 using JobSeeker.Deduplication.Application.Jobs.Base;
+using JobSeeker.Deduplication.Application.Services.Fingerprints;
 using JobSeeker.Deduplication.Application.Services.JobRunner;
+using JobSeeker.Deduplication.Application.Services.Normalizer;
+using JobSeeker.Deduplication.Application.Services.Tokenizer;
+using JobSeeker.Deduplication.Domain.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -14,7 +17,6 @@ public static class DependencyInjection
     {
         ConfigureInfrastructure(app.Services);
         AddServices(app.Services);
-        AddCommands(app.Services);
         AddJobs(app.Services);
     }
 
@@ -32,32 +34,10 @@ public static class DependencyInjection
 
     private static void AddServices(IServiceCollection services)
     {
-    }
-
-    private static void AddCommands(IServiceCollection services)
-    {
-        var commandHandlerType = typeof(ICommandHandler<>);
-
-        var types = commandHandlerType.Assembly.GetExportedTypes()
-            .Where(t => t
-                .GetInterfaces()
-                .Any(i =>
-                    i.IsGenericType &&
-                    i.GetGenericTypeDefinition() == commandHandlerType
-                ))
-            .Select(t => new
-            {
-                Implementation = t,
-                ServiceType = t.GetInterfaces().Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == commandHandlerType).Take(2).ToList()
-            });
-
-        foreach (var type in types)
-        {
-            if (type.ServiceType.Count > 1) throw new Exception("Too many command interfaces");
-            services.AddTransient(type.ServiceType[0], type.Implementation);
-        }
-
         services.AddSingleton<JobRunnerService>();
+        services.AddScoped<INormalizer, SimpleNormalizer>();
+        services.AddScoped<ITokenizer, SimpleTokenizer>();
+        services.AddScoped(typeof(IFingerprintStrategy<RawVacancy>), typeof(RawVacancyFingerprintStrategy<RawVacancy>));
     }
 
     private static void AddJobs(IServiceCollection services)
@@ -82,7 +62,5 @@ public static class DependencyInjection
             if (type.ServiceType.Count > 1) throw new Exception("Too many job interfaces");
             services.AddTransient(type.ServiceType[0], type.Implementation);
         }
-
-        services.AddSingleton<JobRunnerService>();
     }
 }
