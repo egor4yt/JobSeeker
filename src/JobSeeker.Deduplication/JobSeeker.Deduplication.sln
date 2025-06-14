@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.Deduplication.Mes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.Deduplication.Domain", "JobSeeker.Deduplication.Domain\JobSeeker.Deduplication.Domain.csproj", "{143280F0-CEE3-457E-829F-BDAEC361EDEF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.Deduplication.Caching", "JobSeeker.Deduplication.Caching\JobSeeker.Deduplication.Caching.csproj", "{A8444A38-0111-4F5B-BC69-C2DE41413125}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,5 +68,9 @@ Global
 		{143280F0-CEE3-457E-829F-BDAEC361EDEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{143280F0-CEE3-457E-829F-BDAEC361EDEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{143280F0-CEE3-457E-829F-BDAEC361EDEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8444A38-0111-4F5B-BC69-C2DE41413125}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8444A38-0111-4F5B-BC69-C2DE41413125}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8444A38-0111-4F5B-BC69-C2DE41413125}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8444A38-0111-4F5B-BC69-C2DE41413125}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

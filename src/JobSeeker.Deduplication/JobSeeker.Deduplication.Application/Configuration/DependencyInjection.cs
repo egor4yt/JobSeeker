@@ -6,6 +6,7 @@ using JobSeeker.Deduplication.Application.Services.JobRunner;
 using JobSeeker.Deduplication.Application.Services.Normalizer;
 using JobSeeker.Deduplication.Application.Services.Tokenizer;
 using JobSeeker.Deduplication.Domain.Entities;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -15,16 +16,16 @@ public static class DependencyInjection
 {
     public static void ConfigureApplication(this IHostApplicationBuilder app)
     {
-        ConfigureInfrastructure(app.Services);
+        ConfigureInfrastructure(app.Services, app.Configuration);
         AddServices(app.Services);
         AddJobs(app.Services);
     }
 
-    private static void ConfigureInfrastructure(IServiceCollection services)
+    private static void ConfigureInfrastructure(IServiceCollection services, IConfiguration configuration)
     {
-        services.AddHangfire((provider, configuration) =>
+        services.AddHangfire((provider, hangfireConfiguration) =>
         {
-            configuration
+            hangfireConfiguration
                 .UseSimpleAssemblyNameTypeSerializer()
                 .UseRecommendedSerializerSettings()
                 .UseMemoryStorage();

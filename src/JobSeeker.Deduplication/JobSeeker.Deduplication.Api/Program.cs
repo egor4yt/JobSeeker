@@ -1,6 +1,7 @@
 using Hangfire;
 using JobSeeker.Deduplication.Api.Configuration;
 using JobSeeker.Deduplication.Application.Configuration;
+using JobSeeker.Deduplication.Caching.Configuration;
 using JobSeeker.Deduplication.MessageBroker.Configuration;
 using JobSeeker.Deduplication.ObjectStorage.Configuration;
 using JobSeeker.Deduplication.Persistence.Configuration;
@@ -14,6 +15,7 @@ try
     builder.ConfigureApplication();
     builder.ConfigurePersistence();
     builder.ConfigureObjectStorage();
+    builder.ConfigureCache();
 
     var app = builder.Build();
     app.UseHangfireDashboard();

@@ -25,6 +25,7 @@
         <ProjectReference Include="..\JobSeeker.Deduplication.Persistence\JobSeeker.Deduplication.Persistence.csproj"/>
         <ProjectReference Include="..\JobSeeker.Deduplication.ObjectStorage\JobSeeker.Deduplication.ObjectStorage.csproj"/>
         <ProjectReference Include="..\JobSeeker.Deduplication.MessageBroker.Messages\JobSeeker.Deduplication.MessageBroker.Messages.csproj"/>
+        <ProjectReference Include="..\JobSeeker.Deduplication.Caching\JobSeeker.Deduplication.Caching.csproj"/>
     </ItemGroup>
 
 </Project>
