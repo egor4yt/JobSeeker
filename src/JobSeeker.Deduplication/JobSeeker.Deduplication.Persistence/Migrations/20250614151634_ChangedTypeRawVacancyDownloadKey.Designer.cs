@@ -2,6 +2,7 @@
 using JobSeeker.Deduplication.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -10,9 +11,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace JobSeeker.Deduplication.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250614151634_ChangedTypeRawVacancyDownloadKey")]
+    partial class ChangedTypeRawVacancyDownloadKey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,7 +49,7 @@ namespace JobSeeker.Deduplication.Persistence.Migrations
 
                     b.Property<string>("Fingerprint")
                         .IsRequired()
-                        .HasColumnType("varchar(64)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Location")
                         .HasColumnType("varchar(64)");
@@ -54,10 +57,6 @@ namespace JobSeeker.Deduplication.Persistence.Migrations
                     b.Property<string>("SourceDomain")
                         .IsRequired()
                         .HasColumnType("varchar(64)");
-
-                    b.Property<string>("SourceId")
-                        .IsRequired()
-                        .HasColumnType("varchar(128)");
 
                     b.Property<string>("Title")
                         .IsRequired()

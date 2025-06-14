@@ -11,6 +11,7 @@ public class RawVacancy
     public string Description { get; set; } = null!;
     public string Company { get; set; } = null!;
     public string SourceDomain { get; set; } = null!;
+    public string SourceId { get; set; } = null!;
     public bool DeduplicationCompleted { get; set; }
 
     /// <summary>
@@ -18,5 +19,8 @@ public class RawVacancy
     /// </summary>
     public string DownloadKey { get; set; } = null!;
 
+    /// <summary>
+    ///     SHA-256 fingerprint
+    /// </summary>
     public string Fingerprint { get; set; } = null!;
 }

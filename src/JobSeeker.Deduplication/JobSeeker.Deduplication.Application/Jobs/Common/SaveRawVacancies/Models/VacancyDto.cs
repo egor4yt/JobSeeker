@@ -9,7 +9,7 @@ public class VacancyDto
     public string? Description { get; set; }
     public string? City { get; set; }
 
-    public RawVacancy ToRawVacancy(string downloadKey, string sourceDomain)
+    public RawVacancy ToRawVacancy(string downloadKey, string sourceDomain, string sourceId)
     {
         var response = new RawVacancy();
 
@@ -20,6 +20,7 @@ public class VacancyDto
         response.DeduplicationCompleted = false;
         response.DownloadKey = downloadKey;
         response.SourceDomain = sourceDomain;
+        response.SourceId = sourceId;
 
         return response;
     }

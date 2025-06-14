@@ -59,17 +59,28 @@ public class SaveRawVacanciesJob(
             rawVacancy.Fingerprint = await fingerprintStrategy.CalculateAsync(rawVacancy, _cancellationToken);
         }
 
-        var existsFingerprints = await dbContext.RawVacancies
-            .Where(x => rawVacancies.Select(y => y.Fingerprint).Distinct().Contains(x.Fingerprint))
-            .Select(x => x.Fingerprint)
-            .ToListAsync(_cancellationToken);
+        var transaction = await dbContext.Database.BeginTransactionAsync(_cancellationToken);
 
-        var newRawVacancies = rawVacancies.Where(x => existsFingerprints.Contains(x.Fingerprint) == false);
+        try
+        {
+            var downloadKeys = rawVacancies.Select(x => x.DownloadKey);
 
-        await dbContext.RawVacancies.AddRangeAsync(newRawVacancies, _cancellationToken);
-        await dbContext.SaveChangesAsync(_cancellationToken);
+            await dbContext.RawVacancies
+                .Where(x => downloadKeys.Contains(x.DownloadKey))
+                .ExecuteDeleteAsync(_cancellationToken);
 
-        await Task.WhenAll(objectsKeys.Select(DeleteObjectAsync));
+            await dbContext.RawVacancies.AddRangeAsync(rawVacancies, _cancellationToken);
+            await dbContext.SaveChangesAsync(_cancellationToken);
+
+            await transaction.CommitAsync(_cancellationToken);
+        }
+        catch (Exception e)
+        {
+            await transaction.RollbackAsync(_cancellationToken);
+            throw;
+        }
+
+        // await Task.WhenAll(objectsKeys.Select(DeleteObjectAsync));
     }
 
     private async Task<RawVacancy> GetVacanciesAsync(string objectKey)
@@ -93,11 +104,12 @@ public class SaveRawVacanciesJob(
             var objectKeyParts = objectKey.Split('/');
             var downloadKey = objectKeyParts[0];
             var domain = objectKeyParts[5];
+            var sourceId = objectKeyParts.Last().Split('.')[0];
 
             var vacancy = await JsonSerializer.DeserializeAsync<VacancyDto>(stream, _jsonSerializerOptions, _cancellationToken);
             if (vacancy == null) throw new InvalidOperationException($"Failed to deserialize file '{objectKey}'");
 
-            response = vacancy.ToRawVacancy(downloadKey, domain);
+            response = vacancy.ToRawVacancy(downloadKey, domain, sourceId);
 
             logger.LogDebug("Finished downloading {ObjectKey}", objectKey);
         }
