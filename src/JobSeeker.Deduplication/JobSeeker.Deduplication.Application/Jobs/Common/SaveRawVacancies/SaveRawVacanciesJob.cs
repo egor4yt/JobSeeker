@@ -4,6 +4,7 @@ using JobSeeker.Deduplication.Application.Jobs.Common.SaveRawVacancies.Models;
 using JobSeeker.Deduplication.Application.Services.Fingerprints;
 using JobSeeker.Deduplication.Application.Services.Lsh;
 using JobSeeker.Deduplication.Domain.Entities;
+using JobSeeker.Deduplication.MessageBroker.Producers;
 using JobSeeker.Deduplication.ObjectStorage;
 using JobSeeker.Deduplication.ObjectStorage.Models;
 using JobSeeker.Deduplication.Persistence;
@@ -17,7 +18,8 @@ public class SaveRawVacanciesJob(
     IObjectStorage objectStorage,
     ApplicationDbContext dbContext,
     IFingerprintStrategy<RawVacancy> fingerprintStrategy,
-    ILshStrategy<RawVacancy> lshStrategy) : IJob<JobParameters.Common.SaveRawVacancies>
+    ILshStrategy<RawVacancy> lshStrategy,
+    IMessageProducer<MessageBroker.Messages.ScrapTask.RawSaved> producer) : IJob<JobParameters.Common.SaveRawVacancies>
 {
     /// <summary>
     ///     Maximum number of object keys that can be processed in parallel in a single chunk
@@ -36,13 +38,19 @@ public class SaveRawVacanciesJob(
 
         logger.LogInformation("Started downloading raw vacancies for scrap task {ScrapTaskId}", _parameter.ScrapTaskId);
 
-        await RunAsync();
+        var messages = await RunAsync();
 
         logger.LogInformation("Finished downloading raw vacancies for scrap task {ScrapTaskId}", _parameter.ScrapTaskId);
+
+        foreach (var message in messages)
+        {
+            await producer.ProduceAsync(message, _cancellationToken);
+        }
     }
 
-    private async Task RunAsync()
+    private async Task<List<MessageBroker.Messages.ScrapTask.RawSaved>> RunAsync()
     {
+        var response = new List<MessageBroker.Messages.ScrapTask.RawSaved>();
         var request = new GetAllObjectsOptions
         {
             Bucket = Buckets.PagesAnalyzer,
@@ -50,8 +58,7 @@ public class SaveRawVacanciesJob(
         };
 
         var objectsKeys = await objectStorage.GetAllObjectsRecursiveAsync(request, _cancellationToken);
-        if (objectsKeys.Count == 0) return;
-
+        if (objectsKeys.Count == 0) return response;
 
         var downloadedVacancies = await Task.WhenAll(objectsKeys.Select(GetVacanciesAsync));
         await CalculateFingerprintsAsync(downloadedVacancies);
@@ -83,6 +90,14 @@ public class SaveRawVacanciesJob(
                                   && v.SourceDomain == x.SourceDomain
                                   && v.SourceId == x.SourceId) == false
                 ));
+
+            response.Add(new MessageBroker.Messages.ScrapTask.RawSaved
+            {
+                OccupationGroup = downloadedGroup.Key.OccupationGroup,
+                Occupation = downloadedGroup.Key.Occupation,
+                Specialization = downloadedGroup.Key.Specialization,
+                SkillTag = downloadedGroup.Key.SkillTag
+            });
         }
 
         if (newVacancies.Count != 0)
@@ -96,6 +111,8 @@ public class SaveRawVacanciesJob(
 #if DEBUG == false
         await Task.WhenAll(objectsKeys.Select(DeleteObjectAsync));
 #endif
+        
+        return response;
     }
 
     /// <summary>

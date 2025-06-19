@@ -8,7 +8,7 @@ public class RawSaved(ILogger<RawSaved> logger, IBackgroundJobClient jobClient) 
 {
     public Task Consume(ConsumeContext<MessageBroker.Messages.ScrapTask.RawSaved> context)
     {
-        logger.LogDebug("New specialization requested {ScrapTaskId}", context.Message.DownloadKey);
+        logger.LogDebug("New vacancy group requested {@Message}", context.Message);
 
         // var parameter = new Application.JobParameters.Common.CalculateLsh
         // {
