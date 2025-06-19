@@ -93,7 +93,9 @@ public class SaveRawVacanciesJob(
             await dbContext.SaveChangesAsync(_cancellationToken);
         }
 
-        // await Task.WhenAll(objectsKeys.Select(DeleteObjectAsync));
+#if DEBUG == false
+        await Task.WhenAll(objectsKeys.Select(DeleteObjectAsync));
+#endif
     }
 
     /// <summary>
