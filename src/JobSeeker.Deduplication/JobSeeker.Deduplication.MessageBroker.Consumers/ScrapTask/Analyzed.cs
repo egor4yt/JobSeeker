@@ -9,7 +9,7 @@ public class Analyzed(ILogger<Analyzed> logger, IBackgroundJobClient jobClient) 
 {
     public Task Consume(ConsumeContext<MessageBroker.Messages.ScrapTask.Analyzed> context)
     {
-        logger.LogDebug("New scrap task deduplication requested {ScrapTaskId}", context.Message.ScrapTaskId);
+        logger.LogDebug("New scrap task raw saving requested {ScrapTaskId}", context.Message.ScrapTaskId);
 
         var parameter = new Application.JobParameters.Common.SaveRawVacancies
         {

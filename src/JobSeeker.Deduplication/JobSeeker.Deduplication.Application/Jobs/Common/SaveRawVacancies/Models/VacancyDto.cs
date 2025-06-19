@@ -1,6 +1,6 @@
 ﻿using JobSeeker.Deduplication.Domain.Entities;
 
-namespace JobSeeker.Deduplication.Application.Jobs.Common.SaveRawAndCalculateSignatures.Models;
+namespace JobSeeker.Deduplication.Application.Jobs.Common.SaveRawVacancies.Models;
 
 public class VacancyDto
 {
@@ -9,7 +9,8 @@ public class VacancyDto
     public string? Description { get; set; }
     public string? City { get; set; }
 
-    public RawVacancy ToRawVacancy(string downloadKey, string sourceDomain, string sourceId)
+    public RawVacancy ToRawVacancy(string downloadKey, string sourceDomain, string sourceId,
+        string occupationGroup, string occupation, string specialization, string skillTag)
     {
         var response = new RawVacancy();
 
@@ -18,9 +19,14 @@ public class VacancyDto
         response.Company = Company ?? string.Empty;
         response.Description = Description ?? string.Empty;
         response.DeduplicationCompleted = false;
-        response.DownloadKey = downloadKey;
         response.SourceDomain = sourceDomain;
         response.SourceId = sourceId;
+
+        response.CreatedAt = DateTime.UtcNow;
+        response.OccupationGroup = int.Parse(occupationGroup);
+        if (int.TryParse(occupation, out var occupationInt)) response.Occupation = occupationInt;
+        if (int.TryParse(specialization, out var specializationInt)) response.Specialization = specializationInt;
+        if (int.TryParse(skillTag, out var skillTagInt)) response.SkillTag = skillTagInt;
 
         return response;
     }

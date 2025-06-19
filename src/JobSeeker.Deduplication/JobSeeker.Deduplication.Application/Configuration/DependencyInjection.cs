@@ -3,6 +3,7 @@ using Hangfire.MemoryStorage;
 using JobSeeker.Deduplication.Application.Jobs.Base;
 using JobSeeker.Deduplication.Application.Services.Fingerprints;
 using JobSeeker.Deduplication.Application.Services.JobRunner;
+using JobSeeker.Deduplication.Application.Services.Lsh;
 using JobSeeker.Deduplication.Application.Services.Normalizer;
 using JobSeeker.Deduplication.Application.Services.Tokenizer;
 using JobSeeker.Deduplication.Domain.Entities;
@@ -39,6 +40,7 @@ public static class DependencyInjection
         services.AddScoped<INormalizer, SimpleNormalizer>();
         services.AddScoped<ITokenizer, SimpleTokenizer>();
         services.AddScoped(typeof(IFingerprintStrategy<RawVacancy>), typeof(RawVacancyFingerprintStrategy<RawVacancy>));
+        services.AddScoped(typeof(ILshStrategy<RawVacancy>), typeof(RawVacancyLshStrategy<RawVacancy>));
     }
 
     private static void AddJobs(IServiceCollection services)

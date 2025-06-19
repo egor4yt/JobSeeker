@@ -41,8 +41,5 @@ public class RawVacancyConfiguration : IEntityTypeConfiguration<RawVacancy>
             .Property(x => x.Fingerprint)
             .HasColumnType("varchar(64)")
             .IsRequired();
-
-        builder
-            .HasIndex(x => x.DownloadKey, "IX_RawVacancy_DownloadKey");
     }
 }

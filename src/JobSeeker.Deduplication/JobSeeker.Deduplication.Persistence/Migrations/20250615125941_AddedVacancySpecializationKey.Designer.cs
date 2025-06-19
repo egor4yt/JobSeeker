@@ -3,6 +3,7 @@ using System;
 using JobSeeker.Deduplication.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace JobSeeker.Deduplication.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250615125941_AddedVacancySpecializationKey")]
+    partial class AddedVacancySpecializationKey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,13 +37,14 @@ namespace JobSeeker.Deduplication.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(128)");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<bool>("DeduplicationCompleted")
                         .HasColumnType("boolean");
 
                     b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("DownloadKey")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -76,6 +80,8 @@ namespace JobSeeker.Deduplication.Persistence.Migrations
                         .HasColumnType("varchar(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex(new[] { "DownloadKey" }, "IX_RawVacancy_DownloadKey");
 
                     b.ToTable("RawVacancies");
                 });

@@ -13,14 +13,15 @@ public class RawVacancy
     public string SourceDomain { get; set; } = null!;
     public string SourceId { get; set; } = null!;
     public bool DeduplicationCompleted { get; set; }
-
-    /// <summary>
-    ///     S3 root location
-    /// </summary>
-    public string DownloadKey { get; set; } = null!;
+    public DateTime CreatedAt { get; set; }
 
     /// <summary>
     ///     SHA-256 fingerprint
     /// </summary>
     public string Fingerprint { get; set; } = null!;
+
+    public int OccupationGroup { get; set; }
+    public int? Occupation { get; set; }
+    public int? Specialization { get; set; }
+    public int? SkillTag { get; set; }
 }

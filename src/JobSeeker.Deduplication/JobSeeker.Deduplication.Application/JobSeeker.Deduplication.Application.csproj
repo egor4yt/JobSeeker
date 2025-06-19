@@ -16,7 +16,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Jobs\Common\"/>
         <Folder Include="Jobs\Recurring\"/>
     </ItemGroup>
 

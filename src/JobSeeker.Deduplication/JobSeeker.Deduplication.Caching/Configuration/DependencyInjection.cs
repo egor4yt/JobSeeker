@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
+using StackExchange.Redis;
 
 namespace JobSeeker.Deduplication.Caching.Configuration;
 
@@ -26,11 +27,7 @@ public static class DependencyInjection
         switch (cache.Value)
         {
             case "redis":
-                services.AddStackExchangeRedisCache(options =>
-                {
-                    options.Configuration = connectionString.Value;
-                    options.InstanceName = "Deduplication_";
-                });
+                services.AddSingleton<IConnectionMultiplexer>(_ => ConnectionMultiplexer.Connect(connectionString.Value));
                 break;
             default:
                 Log.Warning("Cache disabled: unsupported broker '{CacheBroker}'", cache.Value);

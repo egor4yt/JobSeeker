@@ -17,6 +17,8 @@ public class SimpleNormalizer : INormalizer
             .Replace("c#", "csharp")
             .Replace("ооо ", "")
             .Replace("ано ", "")
+            .Replace("пао ", "")
+            .Replace("оао ", "")
             .Replace("ип ", "")
             .Replace("–", "-")
             .Replace("и", "")

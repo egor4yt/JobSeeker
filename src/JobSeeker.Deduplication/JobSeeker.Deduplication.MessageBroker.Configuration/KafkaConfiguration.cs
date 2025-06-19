@@ -30,6 +30,7 @@ internal static class KafkaConfiguration
 
     private static void ConfigureProducers(IRiderRegistrationConfigurator config)
     {
+        config.AddProducer<Messages.ScrapTask.RawSaved>("scrap-task-raw-saved");
     }
 
     private static void ConfigureTopics(IRiderRegistrationContext context, IKafkaFactoryConfigurator config)
@@ -45,6 +46,12 @@ internal static class KafkaConfiguration
             e.CheckpointInterval = TimeSpan.FromSeconds(1);
             e.AutoOffsetReset = AutoOffsetReset.Earliest;
             e.ConfigureConsumer<Consumers.ScrapTask.Analyzed>(context);
+        });
+        config.TopicEndpoint<Null, Messages.ScrapTask.RawSaved>("scrap-task-raw-saved", "scrap-task-raw-saved-group", e =>
+        {
+            e.CheckpointInterval = TimeSpan.FromSeconds(1);
+            e.AutoOffsetReset = AutoOffsetReset.Earliest;
+            e.ConfigureConsumer<Consumers.ScrapTask.RawSaved>(context);
         });
     }
 }
