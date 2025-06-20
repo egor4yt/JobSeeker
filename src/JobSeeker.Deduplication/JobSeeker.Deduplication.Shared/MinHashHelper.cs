@@ -72,4 +72,16 @@ public class MinHashHelper
             return h1;
         }
     }
+
+    /// <summary>
+    ///     Calculates the Jaccard similarity between two MinHash signatures.
+    /// </summary>
+    /// <param name="firstSignature">The first MinHash signature.</param>
+    /// <param name="secondSignature">The second MinHash signature.</param>
+    /// <returns>A double value representing the Jaccard similarity of the two signatures.</returns>
+    public static double JaccardSimilarity(uint[] firstSignature, uint[] secondSignature)
+    {
+        var equal = firstSignature.Where((firstSignaturePart, index) => firstSignaturePart == secondSignature[index]).Count();
+        return (double)equal / firstSignature.Length;
+    }
 }

@@ -6,6 +6,7 @@
 public class RawVacancy
 {
     public int Id { get; set; }
+    public int? OriginalRawVacancyId { get; set; }
     public string? Location { get; set; }
     public string Title { get; set; } = null!;
     public string Description { get; set; } = null!;
@@ -24,4 +25,7 @@ public class RawVacancy
     public int? Occupation { get; set; }
     public int? Specialization { get; set; }
     public int? SkillTag { get; set; }
+
+    public virtual RawVacancy? OriginalRawVacancy { get; set; }
+    public virtual ICollection<RawVacancy> DuplicateVacancies { get; set; } = null!;
 }

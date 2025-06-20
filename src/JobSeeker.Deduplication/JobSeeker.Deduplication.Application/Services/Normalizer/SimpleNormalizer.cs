@@ -15,14 +15,7 @@ public class SimpleNormalizer : INormalizer
         return text
             .ToLowerInvariant()
             .Replace("c#", "csharp")
-            .Replace("ооо ", "")
-            .Replace("ано ", "")
-            .Replace("пао ", "")
-            .Replace("оао ", "")
-            .Replace("ип ", "")
             .Replace("–", "-")
-            .Replace("и", "")
-            .Replace("или", "")
             .Replace("ё", "е");
     }
 }

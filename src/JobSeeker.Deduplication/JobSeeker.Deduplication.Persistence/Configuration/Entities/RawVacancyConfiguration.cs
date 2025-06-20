@@ -41,5 +41,11 @@ public class RawVacancyConfiguration : IEntityTypeConfiguration<RawVacancy>
             .Property(x => x.Fingerprint)
             .HasColumnType("varchar(64)")
             .IsRequired();
+
+        builder
+            .HasOne(x => x.OriginalRawVacancy)
+            .WithMany(x => x.DuplicateVacancies)
+            .HasForeignKey(x => x.OriginalRawVacancyId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }
