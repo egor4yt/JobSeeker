@@ -1,7 +1,6 @@
 ﻿using JobSeeker.Deduplication.Application.Jobs.Base;
 using JobSeeker.Deduplication.Application.Services.Lsh;
 using JobSeeker.Deduplication.Domain.Entities;
-using JobSeeker.Deduplication.ObjectStorage;
 using JobSeeker.Deduplication.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -10,23 +9,22 @@ namespace JobSeeker.Deduplication.Application.Jobs.Common.DeduplicateVacancies;
 
 public class DeduplicateVacanciesJob(
     ILogger<DeduplicateVacanciesJob> logger,
-    IObjectStorage objectStorage,
     ApplicationDbContext dbContext,
     ILshStrategy<RawVacancy> lshStrategy) : IJob<JobParameters.Common.DeduplicateVacancies>
 {
     private CancellationToken _cancellationToken = CancellationToken.None;
     private JobParameters.Common.DeduplicateVacancies _parameter = null!;
 
-    public async Task RunAsync(JobParameters.Common.DeduplicateVacancies parameter, CancellationToken cancellationToken = default)
+    public async Task RunAsync(JobParameters.Common.DeduplicateVacancies parameter, CancellationToken cancellationToken)
     {
         _parameter = parameter;
         _cancellationToken = cancellationToken;
 
-        logger.LogInformation("Started deduplication vacancy group {@Parameter}", _parameter);
+        logger.LogDebug("Started deduplication vacancy group {@Parameter}", _parameter);
 
         await RunAsync();
 
-        logger.LogInformation("Finished deduplication vacancy group {@Parameter}", _parameter);
+        logger.LogDebug("Finished deduplication vacancy group {@Parameter}", _parameter);
     }
 
     private async Task RunAsync()
@@ -45,6 +43,7 @@ public class DeduplicateVacanciesJob(
             rawVacancy.DeduplicationCompleted = false;
         }
 
+        // Order is important
         await DeduplicateByLshAsync(rawVacancies);
         DeduplicateByFingerprint(rawVacancies);
 

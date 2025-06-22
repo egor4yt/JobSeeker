@@ -1,4 +1,4 @@
-﻿namespace JobSeeker.Deduplication.MessageBroker.Messages.ScrapTask;
+﻿namespace JobSeeker.Deduplication.MessageBroker.Messages.RawVacancy;
 
 public class RawSaved
 {

@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using HtmlAgilityPack;
 using JobSeeker.PagesAnalyzer.Application.Services.AnalyzeStrategy.Models;
+using JobSeeker.PagesAnalyzer.Application.Services.Normalizer;
 using Microsoft.Extensions.Logging;
 
 namespace JobSeeker.PagesAnalyzer.Application.Services.AnalyzeStrategy;
@@ -8,11 +9,11 @@ namespace JobSeeker.PagesAnalyzer.Application.Services.AnalyzeStrategy;
 /// <summary>
 ///     Represents the strategy for analyzing HTML content from the hh.ru domain to extract vacancy details.
 /// </summary>
-public class HhAnalyzeStrategy(ILogger<HhAnalyzeStrategy> logger) : IAnalyzeStrategy
+public class HhAnalyzeStrategy(ILogger<HhAnalyzeStrategy> logger, INormalizer normalizer) : IAnalyzeStrategy
 {
     public const string Domain = "hh.ru";
 
-    public Task<Vacancy> AnalyzeAsync(Stream htmlContent, CancellationToken cancellationToken)
+    public async Task<Vacancy> AnalyzeAsync(Stream htmlContent, CancellationToken cancellationToken)
     {
         var response = new Vacancy();
 
@@ -24,7 +25,9 @@ public class HhAnalyzeStrategy(ILogger<HhAnalyzeStrategy> logger) : IAnalyzeStra
         if (body != null)
         {
             response.Role = body.SelectSingleNode("descendant::*[@data-qa=\"vacancy-title\"]")?.InnerText!;
-            response.Description = body.SelectSingleNode("descendant::*[@data-qa=\"vacancy-description\"]")?.InnerText;
+
+            var description = body.SelectSingleNode("descendant::*[@data-qa=\"vacancy-description\"]")?.InnerText ?? "";
+            response.Description = await normalizer.NormalizeAsync(description, cancellationToken);
 
             response.Company = body.SelectSingleNode("descendant::*[@data-qa=\"vacancy-company-name\"]")?
                 .InnerText.Split(',')
@@ -38,6 +41,6 @@ public class HhAnalyzeStrategy(ILogger<HhAnalyzeStrategy> logger) : IAnalyzeStra
         else
             logger.LogWarning("HTML content is empty");
 
-        return Task.FromResult(response);
+        return response;
     }
 }

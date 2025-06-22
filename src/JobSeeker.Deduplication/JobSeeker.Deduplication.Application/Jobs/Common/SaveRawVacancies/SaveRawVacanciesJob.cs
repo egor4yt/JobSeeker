@@ -4,6 +4,7 @@ using JobSeeker.Deduplication.Application.Jobs.Common.SaveRawVacancies.Models;
 using JobSeeker.Deduplication.Application.Services.Fingerprints;
 using JobSeeker.Deduplication.Application.Services.Lsh;
 using JobSeeker.Deduplication.Domain.Entities;
+using JobSeeker.Deduplication.MessageBroker.Messages.RawVacancy;
 using JobSeeker.Deduplication.MessageBroker.Producers;
 using JobSeeker.Deduplication.ObjectStorage;
 using JobSeeker.Deduplication.ObjectStorage.Models;
@@ -19,7 +20,7 @@ public class SaveRawVacanciesJob(
     ApplicationDbContext dbContext,
     IFingerprintStrategy<RawVacancy> fingerprintStrategy,
     ILshStrategy<RawVacancy> lshStrategy,
-    IMessageProducer<MessageBroker.Messages.ScrapTask.RawSaved> producer) : IJob<JobParameters.Common.SaveRawVacancies>
+    IMessageProducer<RawSaved> producer) : IJob<JobParameters.Common.SaveRawVacancies>
 {
     /// <summary>
     ///     Maximum number of object keys that can be processed in parallel in a single chunk
@@ -36,11 +37,11 @@ public class SaveRawVacanciesJob(
         _parameter = parameter;
         _cancellationToken = cancellationToken;
 
-        logger.LogInformation("Started downloading raw vacancies for scrap task {ScrapTaskId}", _parameter.ScrapTaskId);
+        logger.LogDebug("Started downloading raw vacancies for scrap task {ScrapTaskId}", _parameter.ScrapTaskId);
 
         var messages = await RunAsync();
 
-        logger.LogInformation("Finished downloading raw vacancies for scrap task {ScrapTaskId}", _parameter.ScrapTaskId);
+        logger.LogDebug("Finished downloading raw vacancies for scrap task {ScrapTaskId}", _parameter.ScrapTaskId);
 
         foreach (var message in messages)
         {
@@ -48,9 +49,9 @@ public class SaveRawVacanciesJob(
         }
     }
 
-    private async Task<List<MessageBroker.Messages.ScrapTask.RawSaved>> RunAsync()
+    private async Task<List<RawSaved>> RunAsync()
     {
-        var response = new List<MessageBroker.Messages.ScrapTask.RawSaved>();
+        var response = new List<RawSaved>();
         var request = new GetAllObjectsOptions
         {
             Bucket = Buckets.PagesAnalyzer,
@@ -91,7 +92,7 @@ public class SaveRawVacanciesJob(
                                   && v.SourceId == x.SourceId) == false
                 ));
 
-            response.Add(new MessageBroker.Messages.ScrapTask.RawSaved
+            response.Add(new RawSaved
             {
                 OccupationGroup = downloadedGroup.Key.OccupationGroup,
                 Occupation = downloadedGroup.Key.Occupation,

@@ -1,17 +1,18 @@
 ﻿using Hangfire;
 using JobSeeker.Deduplication.Application.Services.JobRunner;
+using JobSeeker.Deduplication.MessageBroker.Consumers.ScrapTask;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 
-namespace JobSeeker.Deduplication.MessageBroker.Consumers.ScrapTask;
+namespace JobSeeker.Deduplication.MessageBroker.Consumers.RawVacancy;
 
-public class RawSaved(ILogger<RawSaved> logger, IBackgroundJobClient jobClient) : IConsumer<MessageBroker.Messages.ScrapTask.RawSaved>
+public class Deduplicated(ILogger<Analyzed> logger, IBackgroundJobClient jobClient) : IConsumer<Messages.RawVacancy.Deduplicated>
 {
-    public Task Consume(ConsumeContext<MessageBroker.Messages.ScrapTask.RawSaved> context)
+    public Task Consume(ConsumeContext<Messages.RawVacancy.Deduplicated> context)
     {
-        logger.LogDebug("New vacancy group deduplication requested {@Message}", context.Message);
+        logger.LogDebug("New upload vacancy group requested {@Message}", context.Message);
 
-        var parameter = new Application.JobParameters.Common.DeduplicateVacancies
+        var parameter = new Application.JobParameters.Common.UploadVacancyGroup
         {
             OccupationGroup = context.Message.OccupationGroup,
             Occupation = context.Message.Occupation,

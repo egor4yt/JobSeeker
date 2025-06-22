@@ -1,5 +1,6 @@
 using Confluent.Kafka;
 using JobSeeker.Deduplication.MessageBroker.Consumers;
+using JobSeeker.Deduplication.MessageBroker.Consumers.RawVacancy;
 using MassTransit;
 
 namespace JobSeeker.Deduplication.MessageBroker.Configuration;
@@ -30,7 +31,8 @@ internal static class KafkaConfiguration
 
     private static void ConfigureProducers(IRiderRegistrationConfigurator config)
     {
-        config.AddProducer<Messages.ScrapTask.RawSaved>("scrap-task-raw-saved");
+        config.AddProducer<Messages.RawVacancy.RawSaved>("raw-vacancy-saved");
+        config.AddProducer<Messages.RawVacancy.Deduplicated>("raw-vacancy-deduplicated");
     }
 
     private static void ConfigureTopics(IRiderRegistrationContext context, IKafkaFactoryConfigurator config)
@@ -47,11 +49,17 @@ internal static class KafkaConfiguration
             e.AutoOffsetReset = AutoOffsetReset.Earliest;
             e.ConfigureConsumer<Consumers.ScrapTask.Analyzed>(context);
         });
-        config.TopicEndpoint<Null, Messages.ScrapTask.RawSaved>("scrap-task-raw-saved", "scrap-task-raw-saved-group", e =>
+        config.TopicEndpoint<Null, Messages.RawVacancy.RawSaved>("raw-vacancy-saved", "raw-vacancy-saved-group", e =>
         {
             e.CheckpointInterval = TimeSpan.FromSeconds(1);
             e.AutoOffsetReset = AutoOffsetReset.Earliest;
-            e.ConfigureConsumer<Consumers.ScrapTask.RawSaved>(context);
+            e.ConfigureConsumer<RawSaved>(context);
+        });
+        config.TopicEndpoint<Null, Messages.RawVacancy.Deduplicated>("raw-vacancy-deduplicated", "raw-vacancy-deduplicated-group", e =>
+        {
+            e.CheckpointInterval = TimeSpan.FromSeconds(1);
+            e.AutoOffsetReset = AutoOffsetReset.Earliest;
+            e.ConfigureConsumer<Deduplicated>(context);
         });
     }
 }

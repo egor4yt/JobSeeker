@@ -3,6 +3,7 @@ using Hangfire.MemoryStorage;
 using JobSeeker.PagesAnalyzer.Application.Jobs.Base;
 using JobSeeker.PagesAnalyzer.Application.Services.AnalyzeStrategy;
 using JobSeeker.PagesAnalyzer.Application.Services.JobRunner;
+using JobSeeker.PagesAnalyzer.Application.Services.Normalizer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -26,6 +27,7 @@ public static class DependencyInjection
                 .UseMemoryStorage();
         });
         services.AddHangfireServer();
+        services.AddSingleton<INormalizer, SimpleNormalizer>();
         services.AddSingleton<IAnalyzeStrategyFactory, AnalyzeStrategyFactory>();
         services.AddKeyedScoped<IAnalyzeStrategy, HhAnalyzeStrategy>(HhAnalyzeStrategy.Domain);
     }
