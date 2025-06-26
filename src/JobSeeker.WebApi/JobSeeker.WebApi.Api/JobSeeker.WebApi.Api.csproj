@@ -29,6 +29,7 @@
     <ItemGroup>
         <ProjectReference Include="..\JobSeeker.WebApi.Persistence\JobSeeker.WebApi.Persistence.csproj"/>
         <ProjectReference Include="..\JobSeeker.WebApi.Application\JobSeeker.WebApi.Application.csproj"/>
+        <ProjectReference Include="..\JobSeeker.WebApi.MessageBroker.Configuration\JobSeeker.WebApi.MessageBroker.Configuration.csproj"/>
     </ItemGroup>
 
 </Project>

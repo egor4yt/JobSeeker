@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 
 namespace JobSeeker.Deduplication.MessageBroker.Consumers.RawVacancy;
 
-public class Deduplicated(ILogger<Analyzed> logger, IBackgroundJobClient jobClient) : IConsumer<Messages.RawVacancy.Deduplicated>
+public class Deduplicated(ILogger<Deduplicated> logger, IBackgroundJobClient jobClient) : IConsumer<Messages.RawVacancy.Deduplicated>
 {
     public Task Consume(ConsumeContext<Messages.RawVacancy.Deduplicated> context)
     {

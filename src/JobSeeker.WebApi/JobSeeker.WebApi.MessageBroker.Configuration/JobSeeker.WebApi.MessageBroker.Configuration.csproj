@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="MassTransit" Version="8.4.0"/>
+        <PackageReference Include="MassTransit.Kafka" Version="8.4.0"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.4"/>
+        <PackageReference Include="Serilog.AspNetCore" Version="9.0.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\JobSeeker.WebApi.MessageBroker.Consumers\JobSeeker.WebApi.MessageBroker.Consumers.csproj"/>
+        <ProjectReference Include="..\JobSeeker.WebApi.MessageBroker.Producers\JobSeeker.WebApi.MessageBroker.Producers.csproj"/>
+        <ProjectReference Include="..\JobSeeker.WebApi.Shared\JobSeeker.WebApi.Shared.csproj"/>
+    </ItemGroup>
+
+</Project>

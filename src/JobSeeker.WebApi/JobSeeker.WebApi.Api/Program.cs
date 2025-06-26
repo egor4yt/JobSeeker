@@ -1,5 +1,6 @@
 using JobSeeker.WebApi.Api.Configuration;
 using JobSeeker.WebApi.Application.Configuration;
+using JobSeeker.WebApi.MessageBroker.Configuration;
 using JobSeeker.WebApi.Persistence.Configuration;
 using Serilog;
 
@@ -9,6 +10,7 @@ try
     builder.ConfigureApi();
     builder.ConfigurePersistence();
     builder.ConfigureApplication();
+    builder.ConfigureMessageBroker();
 
     var app = builder.Build();
     app.UseInitializeDatabase();

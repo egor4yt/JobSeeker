@@ -10,6 +10,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.WebApi.Domain", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.WebApi.Application", "JobSeeker.WebApi.Application\JobSeeker.WebApi.Application.csproj", "{1EEDC263-82AD-4CD4-B4AF-6CFD1AD6D9CE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.WebApi.MessageBroker.Configuration", "JobSeeker.WebApi.MessageBroker.Configuration\JobSeeker.WebApi.MessageBroker.Configuration.csproj", "{90AF6981-B6C8-4B5E-9096-1E883A748B11}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.WebApi.MessageBroker.Consumers", "JobSeeker.WebApi.MessageBroker.Consumers\JobSeeker.WebApi.MessageBroker.Consumers.csproj", "{D7D66479-FF37-4C37-A4C2-35149E5C27D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.WebApi.MessageBroker.Producers", "JobSeeker.WebApi.MessageBroker.Producers\JobSeeker.WebApi.MessageBroker.Producers.csproj", "{0F7B6552-D0F2-4CA0-9862-77355D1DF643}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.WebApi.MessageBroker.Messages", "JobSeeker.WebApi.MessageBroker.Messages\JobSeeker.WebApi.MessageBroker.Messages.csproj", "{41AEB75A-C5EF-4216-8331-2F5B7EC882BD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +44,21 @@ Global
 		{1EEDC263-82AD-4CD4-B4AF-6CFD1AD6D9CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1EEDC263-82AD-4CD4-B4AF-6CFD1AD6D9CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1EEDC263-82AD-4CD4-B4AF-6CFD1AD6D9CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90AF6981-B6C8-4B5E-9096-1E883A748B11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90AF6981-B6C8-4B5E-9096-1E883A748B11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90AF6981-B6C8-4B5E-9096-1E883A748B11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90AF6981-B6C8-4B5E-9096-1E883A748B11}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7D66479-FF37-4C37-A4C2-35149E5C27D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7D66479-FF37-4C37-A4C2-35149E5C27D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7D66479-FF37-4C37-A4C2-35149E5C27D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7D66479-FF37-4C37-A4C2-35149E5C27D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F7B6552-D0F2-4CA0-9862-77355D1DF643}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F7B6552-D0F2-4CA0-9862-77355D1DF643}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F7B6552-D0F2-4CA0-9862-77355D1DF643}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F7B6552-D0F2-4CA0-9862-77355D1DF643}.Release|Any CPU.Build.0 = Release|Any CPU
+		{41AEB75A-C5EF-4216-8331-2F5B7EC882BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{41AEB75A-C5EF-4216-8331-2F5B7EC882BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{41AEB75A-C5EF-4216-8331-2F5B7EC882BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{41AEB75A-C5EF-4216-8331-2F5B7EC882BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

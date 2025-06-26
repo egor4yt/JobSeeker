@@ -16,7 +16,6 @@
       <Folder Include="Commands\" />
       <Folder Include="JobParameters\Common\" />
       <Folder Include="Queries\" />
-      <Folder Include="CurrentUser\" />
     </ItemGroup>
 
     <ItemGroup>
