@@ -3,6 +3,7 @@ using System;
 using JobSeeker.WebApi.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace JobSeeker.WebApi.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250626162958_AddedCompanySlug")]
+    partial class AddedCompanySlug
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,12 +39,9 @@ namespace JobSeeker.WebApi.Persistence.Migrations
 
                     b.Property<string>("Slug")
                         .IsRequired()
-                        .HasColumnType("varchar(256)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex(new[] { "Slug" }, "UX_Company_Slug")
-                        .IsUnique();
 
                     b.ToTable("Companies");
                 });

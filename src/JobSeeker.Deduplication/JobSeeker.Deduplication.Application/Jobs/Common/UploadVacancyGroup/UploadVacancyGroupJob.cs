@@ -2,6 +2,7 @@
 using JobSeeker.Deduplication.Application.Jobs.Base;
 using JobSeeker.Deduplication.Application.Jobs.Common.UploadVacancyGroup.Models;
 using JobSeeker.Deduplication.Domain.Entities;
+using JobSeeker.Deduplication.MessageBroker.Producers;
 using JobSeeker.Deduplication.ObjectStorage;
 using JobSeeker.Deduplication.ObjectStorage.Models;
 using JobSeeker.Deduplication.Persistence;
@@ -13,7 +14,8 @@ namespace JobSeeker.Deduplication.Application.Jobs.Common.UploadVacancyGroup;
 public class UploadVacancyGroupJob(
     ILogger<UploadVacancyGroupJob> logger,
     IObjectStorage objectStorage,
-    ApplicationDbContext dbContext) : IJob<JobParameters.Common.UploadVacancyGroup>
+    ApplicationDbContext dbContext,
+    IMessageProducer<MessageBroker.Messages.DeduplicatedVacancy.Uploaded> producer) : IJob<JobParameters.Common.UploadVacancyGroup>
 {
     /// <summary>
     ///     Maximum number of object keys that can be processed in parallel in a single chunk
@@ -35,6 +37,15 @@ public class UploadVacancyGroupJob(
         await RunAsync();
 
         logger.LogDebug("Finished uploading deduplicated vacancy group {@Parameter}", _parameter);
+        
+        var message = new MessageBroker.Messages.DeduplicatedVacancy.Uploaded
+        {
+            OccupationGroup = _parameter.OccupationGroup,
+            Occupation = _parameter.Occupation,
+            Specialization = _parameter.Specialization,
+            SkillTag = _parameter.SkillTag
+        };
+        await producer.ProduceAsync(message, _cancellationToken);
     }
 
     private async Task RunAsync()
@@ -55,7 +66,7 @@ public class UploadVacancyGroupJob(
         await Task.WhenAll(uploadTasks);
     }
 
-    private Dictionary<int, VacancyDto> GetVacancies(IDictionary<int, RawVacancy> rawVacancies)
+    private static Dictionary<int, VacancyDto> GetVacancies(IDictionary<int, RawVacancy> rawVacancies)
     {
         // originalVacancyId : vacancyDto
         var response = new Dictionary<int, VacancyDto>();

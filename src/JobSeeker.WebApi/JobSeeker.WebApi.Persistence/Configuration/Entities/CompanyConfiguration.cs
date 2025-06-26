@@ -12,5 +12,14 @@ public class CompanyConfiguration : IEntityTypeConfiguration<Company>
             .Property(x => x.Name)
             .HasColumnType("varchar(128)")
             .IsRequired();
+        
+        builder
+            .Property(x => x.Slug)
+            .HasColumnType("varchar(256)")
+            .IsRequired();
+        
+        builder
+            .HasIndex(x => x.Slug, "UX_Company_Slug")
+            .IsUnique();
     }
 }

@@ -3,6 +3,7 @@ using System;
 using JobSeeker.WebApi.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace JobSeeker.WebApi.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250626155136_MetadataIdNeverGenerated")]
+    partial class MetadataIdNeverGenerated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,14 +37,7 @@ namespace JobSeeker.WebApi.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(128)");
 
-                    b.Property<string>("Slug")
-                        .IsRequired()
-                        .HasColumnType("varchar(256)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex(new[] { "Slug" }, "UX_Company_Slug")
-                        .IsUnique();
 
                     b.ToTable("Companies");
                 });

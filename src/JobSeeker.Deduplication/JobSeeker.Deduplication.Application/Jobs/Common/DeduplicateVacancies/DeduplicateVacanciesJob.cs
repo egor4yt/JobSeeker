@@ -1,6 +1,7 @@
 ﻿using JobSeeker.Deduplication.Application.Jobs.Base;
 using JobSeeker.Deduplication.Application.Services.Lsh;
 using JobSeeker.Deduplication.Domain.Entities;
+using JobSeeker.Deduplication.MessageBroker.Producers;
 using JobSeeker.Deduplication.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -10,7 +11,8 @@ namespace JobSeeker.Deduplication.Application.Jobs.Common.DeduplicateVacancies;
 public class DeduplicateVacanciesJob(
     ILogger<DeduplicateVacanciesJob> logger,
     ApplicationDbContext dbContext,
-    ILshStrategy<RawVacancy> lshStrategy) : IJob<JobParameters.Common.DeduplicateVacancies>
+    ILshStrategy<RawVacancy> lshStrategy,
+    IMessageProducer<MessageBroker.Messages.RawVacancy.Deduplicated> producer) : IJob<JobParameters.Common.DeduplicateVacancies>
 {
     private CancellationToken _cancellationToken = CancellationToken.None;
     private JobParameters.Common.DeduplicateVacancies _parameter = null!;
@@ -25,6 +27,15 @@ public class DeduplicateVacanciesJob(
         await RunAsync();
 
         logger.LogDebug("Finished deduplication vacancy group {@Parameter}", _parameter);
+
+        var message = new MessageBroker.Messages.RawVacancy.Deduplicated
+        {
+            OccupationGroup = _parameter.OccupationGroup,
+            Occupation = _parameter.Occupation,
+            Specialization = _parameter.Specialization,
+            SkillTag = _parameter.SkillTag
+        };
+        await producer.ProduceAsync(message, _cancellationToken);
     }
 
     private async Task RunAsync()

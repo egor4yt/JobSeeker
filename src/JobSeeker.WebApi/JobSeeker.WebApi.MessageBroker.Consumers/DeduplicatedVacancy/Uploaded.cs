@@ -1,4 +1,6 @@
 ﻿using Hangfire;
+using JobSeeker.WebApi.Application.Services.JobRunner;
+using JobSeeker.WebApi.Shared.Constants;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 
@@ -10,14 +12,14 @@ public class Uploaded(ILogger<Uploaded> logger, IBackgroundJobClient jobClient) 
     {
         logger.LogDebug("New deduplicated vacancies group uploaded {@Message}", context.Message);
 
-        // var parameter = new Application.JobParameters.Common.UploadVacancyGroup
-        // {
-        //     OccupationGroup = context.Message.OccupationGroup,
-        //     Occupation = context.Message.Occupation,
-        //     Specialization = context.Message.Specialization,
-        //     SkillTag = context.Message.SkillTag
-        // };
-        // jobClient.Enqueue<JobRunnerService>(x => x.RunAsync(parameter, null!, CancellationToken.None));
+        var parameter = new Application.JobParameters.Common.DownloadDeduplicatedVacancies
+        {
+            OccupationGroup = context.Message.OccupationGroup,
+            Occupation = context.Message.Occupation,
+            Specialization = context.Message.Specialization,
+            SkillTag = context.Message.SkillTag
+        };
+        jobClient.Enqueue<JobRunnerService>(JobQueue.DownloadVacancies, x => x.RunAsync(parameter, null!, CancellationToken.None));
 
         return Task.CompletedTask;
     }

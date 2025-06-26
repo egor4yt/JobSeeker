@@ -14,7 +14,6 @@
     
     <ItemGroup>
       <Folder Include="Commands\" />
-      <Folder Include="JobParameters\Common\" />
       <Folder Include="Queries\" />
     </ItemGroup>
 
@@ -26,7 +25,9 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\JobSeeker.WebApi.Persistence\JobSeeker.WebApi.Persistence.csproj" />
       <ProjectReference Include="..\JobSeeker.WebApi.Shared\JobSeeker.WebApi.Shared.csproj" />
+      <ProjectReference Include="..\JobSeeker.WebApi.ObjectStorage\JobSeeker.WebApi.ObjectStorage.csproj" />
     </ItemGroup>
 
 </Project>

@@ -33,6 +33,7 @@ internal static class KafkaConfiguration
     {
         config.AddProducer<Messages.RawVacancy.RawSaved>("raw-vacancy-saved");
         config.AddProducer<Messages.RawVacancy.Deduplicated>("raw-vacancy-deduplicated");
+        config.AddProducer<Messages.DeduplicatedVacancy.Uploaded>("deduplicated-vacancy-uploaded");
     }
 
     private static void ConfigureTopics(IRiderRegistrationContext context, IKafkaFactoryConfigurator config)

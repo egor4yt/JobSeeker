@@ -3,7 +3,9 @@ using FluentValidation;
 using Hangfire;
 using Hangfire.PostgreSql;
 using JobSeeker.WebApi.Application.Behaviours;
+using JobSeeker.WebApi.Application.Hosted;
 using JobSeeker.WebApi.Application.Jobs.Base;
+using JobSeeker.WebApi.Application.Services.DataSeeder;
 using JobSeeker.WebApi.Application.Services.JobRunner;
 using JobSeeker.WebApi.Shared;
 using JobSeeker.WebApi.Shared.Constants;
@@ -21,6 +23,7 @@ public static class DependencyInjection
         ConfigureInfrastructure(app.Services, app.Configuration);
         AddServices(app.Services);
         AddJobs(app.Services);
+        AddHosted(app.Services);
     }
 
     private static void ConfigureInfrastructure(IServiceCollection services, IConfiguration appConfiguration)
@@ -59,6 +62,13 @@ public static class DependencyInjection
     private static void AddServices(IServiceCollection services)
     {
         services.AddSingleton<JobRunnerService>();
+
+        // Order is important
+        services.AddScoped<IDataSeeder, OccupationGroupsSeeder>();
+        services.AddScoped<IDataSeeder, OccupationsSeeder>();
+        services.AddScoped<IDataSeeder, SpecializationSeeder>();
+        services.AddScoped<IDataSeeder, SkillTagsSeeder>();
+        services.AddScoped<IDataSeeder, ProfessionKeysSeeder>();
     }
 
     private static void AddJobs(IServiceCollection services)
@@ -83,5 +93,10 @@ public static class DependencyInjection
             if (type.ServiceType.Count > 1) throw new Exception("Too many job interfaces");
             services.AddTransient(type.ServiceType[0], type.Implementation);
         }
+    }
+
+    private static void AddHosted(IServiceCollection services)
+    {
+        services.AddHostedService<DataSeedingHostedService>();
     }
 }

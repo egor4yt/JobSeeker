@@ -1,6 +1,8 @@
+using Hangfire;
 using JobSeeker.WebApi.Api.Configuration;
 using JobSeeker.WebApi.Application.Configuration;
 using JobSeeker.WebApi.MessageBroker.Configuration;
+using JobSeeker.WebApi.ObjectStorage.Configuration;
 using JobSeeker.WebApi.Persistence.Configuration;
 using Serilog;
 
@@ -11,12 +13,14 @@ try
     builder.ConfigurePersistence();
     builder.ConfigureApplication();
     builder.ConfigureMessageBroker();
+    builder.ConfigureObjectStorage();
 
     var app = builder.Build();
     app.UseInitializeDatabase();
     app.UseRequestLogging();
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseHangfireDashboard();
 
     var appUrls = builder.Configuration["applicationUrl"]?.Split(';')
                   ?? builder.Configuration.GetValue<string>("urls")?.Split(';')
@@ -24,6 +28,7 @@ try
 
     app.Logger.LogInformation("Application listening on {Addresses}", appUrls.Select(object? (x) => x));
     app.Logger.LogInformation("Swagger documentation listening on {SwaggerAddresses}", appUrls.Select(object? (x) => $"{x}/swagger/index.html"));
+    app.Logger.LogInformation("Hangfire dashboard listening on {SwaggerAddresses}", appUrls.Select(object? (x) => $"{x}/hangfire/jobs/enqueued"));
 
     app.MapControllers();
     app.Run();

@@ -8,6 +8,9 @@ public class OccupationConfiguration : IEntityTypeConfiguration<Occupation>
 {
     public void Configure(EntityTypeBuilder<Occupation> builder)
     {
+        builder.HasKey(x => x.Id);
+        builder.Property(x => x.Id).ValueGeneratedNever();
+        
         builder
             .Property(x => x.Title)
             .HasColumnType("varchar(128)")
