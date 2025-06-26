@@ -5,6 +5,7 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <RootNamespace>JobSeeker.WebApi.Api</RootNamespace>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -12,16 +13,22 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0"/>
         <PackageReference Include="Serilog" Version="4.2.0"/>
+        <PackageReference Include="Serilog.AspNetCore" Version="9.0.0"/>
         <PackageReference Include="Serilog.Enrichers.Context" Version="4.6.5"/>
         <PackageReference Include="Serilog.Extensions.Logging" Version="9.0.0"/>
         <PackageReference Include="Serilog.Formatting.Compact" Version="3.0.0"/>
         <PackageReference Include="Serilog.Settings.Configuration" Version="9.0.0"/>
         <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0"/>
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.6.2"/>
+        <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="9.0.1"/>
+        <PackageReference Include="MediatR" Version="12.5.0"/>
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\JobSeeker.WebApi.Persistence\JobSeeker.WebApi.Persistence.csproj"/>
+        <ProjectReference Include="..\JobSeeker.WebApi.Application\JobSeeker.WebApi.Application.csproj"/>
     </ItemGroup>
 
 </Project>

@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Hangfire.AspNetCore" Version="1.8.18"/>
+        <PackageReference Include="Hangfire.Core" Version="1.8.18"/>
+        <PackageReference Include="Hangfire.PostgreSql" Version="1.20.12"/>
+    </ItemGroup>
+    
+    <ItemGroup>
+      <Folder Include="Commands\" />
+      <Folder Include="JobParameters\Common\" />
+      <Folder Include="Queries\" />
+      <Folder Include="CurrentUser\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="FluentValidation" Version="12.0.0" />
+      <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
+      <PackageReference Include="MediatR" Version="12.5.0" />
+      <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\JobSeeker.WebApi.Shared\JobSeeker.WebApi.Shared.csproj" />
+    </ItemGroup>
+
+</Project>

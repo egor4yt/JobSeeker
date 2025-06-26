@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.WebApi.Persistenc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.WebApi.Domain", "JobSeeker.WebApi.Domain\JobSeeker.WebApi.Domain.csproj", "{79D76252-EFCF-4955-BD89-DB65514C87BE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.WebApi.Application", "JobSeeker.WebApi.Application\JobSeeker.WebApi.Application.csproj", "{1EEDC263-82AD-4CD4-B4AF-6CFD1AD6D9CE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{79D76252-EFCF-4955-BD89-DB65514C87BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{79D76252-EFCF-4955-BD89-DB65514C87BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{79D76252-EFCF-4955-BD89-DB65514C87BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EEDC263-82AD-4CD4-B4AF-6CFD1AD6D9CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EEDC263-82AD-4CD4-B4AF-6CFD1AD6D9CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EEDC263-82AD-4CD4-B4AF-6CFD1AD6D9CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EEDC263-82AD-4CD4-B4AF-6CFD1AD6D9CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
