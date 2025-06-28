@@ -216,7 +216,7 @@ public class DownloadDeduplicatedVacanciesJob(
     private void UpdateVacancySources(Vacancy vacancy, VacancyDto vacancyDto, Dictionary<string, Location> locations, List<Source> sources)
     {
         vacancy.VacancySources.Clear();
-        
+
         foreach (var vacancySource in vacancyDto.Sources)
         {
             var locationSlug = SlugHelper.GenerateSlug(vacancySource.Location);
