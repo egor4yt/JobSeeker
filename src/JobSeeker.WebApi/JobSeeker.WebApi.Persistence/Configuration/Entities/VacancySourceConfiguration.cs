@@ -21,11 +21,11 @@ public class VacancySourceConfiguration : IEntityTypeConfiguration<VacancySource
         builder
             .HasOne(x => x.Location)
             .WithMany(x => x.VacancySources)
-            .HasForeignKey(x => x.SourceId);
+            .HasForeignKey(x => x.LocationId);
 
         builder
             .HasOne(x => x.Vacancy)
             .WithMany(x => x.VacancySources)
-            .HasForeignKey(x => x.SourceId);
+            .HasForeignKey(x => x.VacancyId);
     }
 }

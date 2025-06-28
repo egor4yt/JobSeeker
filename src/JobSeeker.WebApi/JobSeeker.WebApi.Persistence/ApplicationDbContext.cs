@@ -13,7 +13,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Occupation> Occupations { get; set; }
     public DbSet<Specialization> Specializations { get; set; }
     public DbSet<SkillTag> SkillTags { get; set; }
-    public DbSet<Source> OuterSources { get; set; }
+    public DbSet<Source> Sources { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

@@ -3,6 +3,7 @@ using System;
 using JobSeeker.WebApi.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace JobSeeker.WebApi.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250628122809_AddedActualityDate")]
+    partial class AddedActualityDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,18 +57,11 @@ namespace JobSeeker.WebApi.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Slug")
-                        .IsRequired()
-                        .HasColumnType("varchar(256)");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("varchar(128)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex(new[] { "Slug" }, "UX_Location_Slug")
-                        .IsUnique();
 
                     b.ToTable("Locations");
                 });
@@ -177,7 +173,7 @@ namespace JobSeeker.WebApi.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sources");
+                    b.ToTable("OuterSources");
                 });
 
             modelBuilder.Entity("JobSeeker.WebApi.Domain.Entities.Specialization", b =>
@@ -241,7 +237,7 @@ namespace JobSeeker.WebApi.Persistence.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("LocationId")
+                    b.Property<int>("LocationId")
                         .HasColumnType("integer");
 
                     b.Property<int>("SourceId")
@@ -256,11 +252,7 @@ namespace JobSeeker.WebApi.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LocationId");
-
                     b.HasIndex("SourceId");
-
-                    b.HasIndex("VacancyId");
 
                     b.ToTable("VacancySource");
                 });
@@ -350,7 +342,9 @@ namespace JobSeeker.WebApi.Persistence.Migrations
                 {
                     b.HasOne("JobSeeker.WebApi.Domain.Entities.Location", "Location")
                         .WithMany("VacancySources")
-                        .HasForeignKey("LocationId");
+                        .HasForeignKey("SourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("JobSeeker.WebApi.Domain.Entities.Source", "Source")
                         .WithMany("VacancySources")
@@ -360,7 +354,7 @@ namespace JobSeeker.WebApi.Persistence.Migrations
 
                     b.HasOne("JobSeeker.WebApi.Domain.Entities.Vacancy", "Vacancy")
                         .WithMany("VacancySources")
-                        .HasForeignKey("VacancyId")
+                        .HasForeignKey("SourceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -4,5 +4,6 @@ public class Location
 {
     public int Id { get; set; }
     public string Title { get; set; } = null!;
+    public string Slug { get; set; } = null!;
     public virtual ICollection<VacancySource> VacancySources { get; set; } = null!;
 }

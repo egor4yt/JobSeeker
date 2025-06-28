@@ -16,7 +16,7 @@ public static partial class SlugHelper
         { 'э', "e" }, { 'ю', "yu" }, { 'я', "ya" }
     };
 
-    public static string GenerateSlug(string input)
+    public static string GenerateSlug(string? input)
     {
         if (string.IsNullOrWhiteSpace(input))
             return string.Empty;

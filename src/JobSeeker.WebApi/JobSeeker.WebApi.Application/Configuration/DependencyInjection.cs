@@ -64,6 +64,7 @@ public static class DependencyInjection
         services.AddSingleton<JobRunnerService>();
 
         // Order is important
+        services.AddScoped<IDataSeeder, SourcesSeeder>();
         services.AddScoped<IDataSeeder, OccupationGroupsSeeder>();
         services.AddScoped<IDataSeeder, OccupationsSeeder>();
         services.AddScoped<IDataSeeder, SpecializationSeeder>();

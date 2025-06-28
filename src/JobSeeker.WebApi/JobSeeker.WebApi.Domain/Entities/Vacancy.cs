@@ -7,7 +7,8 @@ public class Vacancy
     public string Description { get; set; } = null!;
     public int CompanyId { get; set; }
     public int ProfessionKeyId { get; set; }
-
+    public DateTime ActualityDate { get; set; }
+    
     public virtual ProfessionKey ProfessionKey { get; set; } = null!;
     public virtual Company Company { get; set; } = null!;
     public virtual ICollection<VacancySource> VacancySources { get; set; } = null!;

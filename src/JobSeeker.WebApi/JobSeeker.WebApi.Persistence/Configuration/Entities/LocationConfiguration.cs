@@ -12,5 +12,14 @@ public class LocationConfiguration : IEntityTypeConfiguration<Location>
             .Property(x => x.Title)
             .HasColumnType("varchar(128)")
             .IsRequired();
+        
+        builder
+            .Property(x => x.Slug)
+            .HasColumnType("varchar(256)")
+            .IsRequired();
+        
+        builder
+            .HasIndex(x => x.Slug, "UX_Location_Slug")
+            .IsUnique();
     }
 }

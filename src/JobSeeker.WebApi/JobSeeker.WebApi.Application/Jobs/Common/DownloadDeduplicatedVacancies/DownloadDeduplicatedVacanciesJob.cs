@@ -50,21 +50,9 @@ public class DownloadDeduplicatedVacanciesJob(
 
         var downloadedVacancies = await GetAllVacancies();
 
-        var companiesSlugs = downloadedVacancies.Select(v => SlugHelper.GenerateSlug(v.Company));
-        var companies = await dbContext.Companies
-            .Where(x => companiesSlugs.Contains(x.Slug))
-            .ToDictionaryAsync(x => x.Slug, x => x, _cancellationToken);
-
-        var newVacancies = CreateVacancies(downloadedVacancies, companies, professionKey.Id);
-
-        await dbContext.Vacancies.AddRangeAsync(newVacancies, _cancellationToken);
+        var newVacancies = await CreateAndUpdateVacancies(downloadedVacancies, professionKey.Id);
+        if (newVacancies.Count != 0) await dbContext.Vacancies.AddRangeAsync(newVacancies, _cancellationToken);
         await dbContext.SaveChangesAsync(_cancellationToken);
-        
-        //TODO: update old vacancies
-        
-        // var oldVacancies = await dbContext.Vacancies
-        //     .Where(x => x.ProfessionKeyId == professionKey.Id)
-        //     .ToListAsync(_cancellationToken);
     }
 
     private async Task<List<VacancyDto>> GetAllVacancies()
@@ -118,36 +106,138 @@ public class DownloadDeduplicatedVacanciesJob(
         return response;
     }
 
-    private List<Vacancy> CreateVacancies(IList<VacancyDto> vacancies, Dictionary<string, Company> companies, int professionKeyId)
+    private async Task<Dictionary<string, Company>> CreateCompanies(IList<VacancyDto> vacanciesToCreate)
+    {
+        var potentialCompanies = vacanciesToCreate
+            .DistinctBy(x => x.Company)
+            .Select(x => new Company
+            {
+                Name = x.Company,
+                Slug = SlugHelper.GenerateSlug(x.Company)
+            })
+            .ToList();
+
+        var response = await dbContext.Companies
+            .Where(x => potentialCompanies.Select(c => c.Slug).Contains(x.Slug))
+            .ToDictionaryAsync(x => x.Slug, x => x, _cancellationToken);
+
+        var companiesToCreate = potentialCompanies
+            .Where(x => response.ContainsKey(x.Slug) == false)
+            .ToList();
+
+        await dbContext.Companies.AddRangeAsync(companiesToCreate, _cancellationToken);
+
+        companiesToCreate.ForEach(x => response.Add(x.Slug, x));
+
+        return response;
+    }
+
+    private async Task<Dictionary<string, Location>> CreateLocations(IList<VacancyDto> vacanciesToCreate)
+    {
+        var potentialLocations = vacanciesToCreate
+            .SelectMany(x => x.Sources)
+            .DistinctBy(x => x.Location)
+            .Where(x => string.IsNullOrWhiteSpace(x.Location) == false)
+            .Select(x => new Location
+            {
+                Title = x.Location!,
+                Slug = SlugHelper.GenerateSlug(x.Location!)
+            })
+            .ToList();
+
+        var response = await dbContext.Locations
+            .Where(x => potentialLocations.Select(c => c.Slug).Contains(x.Slug))
+            .ToDictionaryAsync(x => x.Slug, x => x, _cancellationToken);
+
+        var locationsToCreate = potentialLocations
+            .Where(x => response.ContainsKey(x.Slug) == false)
+            .ToList();
+
+        await dbContext.Locations.AddRangeAsync(locationsToCreate, _cancellationToken);
+
+        locationsToCreate.ForEach(x => response.Add(x.Slug, x));
+
+        return response;
+    }
+
+    private async Task<List<Vacancy>> CreateAndUpdateVacancies(IList<VacancyDto> vacanciesToCreate, int professionKeyId)
     {
         var newVacancies = new List<Vacancy>();
 
-        foreach (var vacancy in vacancies)
+        var companies = await CreateCompanies(vacanciesToCreate);
+        var locations = await CreateLocations(vacanciesToCreate);
+        var sources = await dbContext.Sources.ToListAsync(_cancellationToken);
+
+        var existsVacancies = await dbContext.Vacancies
+            .Include(x => x.Company)
+            .Include(x => x.VacancySources)
+            .Where(x => x.ProfessionKeyId == professionKeyId
+                        && x.ActualityDate > DateTime.UtcNow.AddDays(-30))
+            .OrderBy(x => x.ActualityDate)
+            .GroupBy(x => new { x.CompanyId, x.ActualityDate })
+            .Select(x => x.First())
+            .ToListAsync(_cancellationToken);
+
+        foreach (var vacancy in vacanciesToCreate)
         {
             var newVacancy = new Vacancy();
             newVacancy.Title = vacancy.Title;
             newVacancy.Description = vacancy.Description;
+            newVacancy.ActualityDate = vacancy.CreatedAt;
             newVacancy.ProfessionKeyId = professionKeyId;
+            newVacancy.VacancySources = [];
 
             var companySlug = SlugHelper.GenerateSlug(vacancy.Company);
+            var company = companies[companySlug];
 
-            if (companies.TryGetValue(companySlug, out var company))
-                newVacancy.Company = company;
-            else
+            var existsVacancy = existsVacancies.FirstOrDefault(x => x.Company.Slug == company.Slug
+                                                                    && x.ActualityDate == newVacancy.ActualityDate
+                                                                    && x.ProfessionKeyId == professionKeyId
+                                                                    && x.Company.Name == company.Name);
+
+            if (existsVacancy != null)
             {
-                var newCompany = new Company
-                {
-                    Name = vacancy.Company,
-                    Slug = companySlug
-                };
-                newVacancy.Company = newCompany;
+                UpdateVacancySources(existsVacancy, vacancy, locations, sources);
+                logger.LogDebug("Updated vacancy {VacancyTitle}", existsVacancy.Title);
 
-                companies.Add(companySlug, newCompany);
+                continue;
             }
 
+            UpdateVacancySources(newVacancy, vacancy, locations, sources);
+            newVacancy.Company = company;
             newVacancies.Add(newVacancy);
+
+            logger.LogDebug("Added new vacancy {VacancyTitle}", newVacancy.Title);
         }
 
         return newVacancies;
+    }
+
+    private void UpdateVacancySources(Vacancy vacancy, VacancyDto vacancyDto, Dictionary<string, Location> locations, List<Source> sources)
+    {
+        vacancy.VacancySources.Clear();
+        
+        foreach (var vacancySource in vacancyDto.Sources)
+        {
+            var locationSlug = SlugHelper.GenerateSlug(vacancySource.Location);
+            var location = string.IsNullOrWhiteSpace(locationSlug) == false ? locations[locationSlug] : null;
+
+            var topLevelDomain = string.Join('.', vacancySource.SourceDomain.Split('.').TakeLast(2)).ToLowerInvariant();
+            var sourceId = sources.FirstOrDefault(x => x.TopLevelDomain == topLevelDomain)?.Id;
+            if (sourceId.HasValue == false)
+            {
+                logger.LogWarning("Unknown domain {Domain}", vacancySource.SourceDomain);
+                continue;
+            }
+
+            var source = new VacancySource
+            {
+                SourceKey = vacancySource.SourceId,
+                SourceId = sourceId.Value,
+                Location = location
+            };
+
+            vacancy.VacancySources.Add(source);
+        }
     }
 }
