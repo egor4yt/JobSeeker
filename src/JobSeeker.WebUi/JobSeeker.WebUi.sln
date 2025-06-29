@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.WebUi.Application", "JobSeeker.WebUi.Application\JobSeeker.WebUi.Application.csproj", "{C327345E-4BE4-4149-92C2-46A871E9F944}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JobSeeker.WebUi.Shared", "JobSeeker.WebUi.Shared\JobSeeker.WebUi.Shared.csproj", "{02D29703-5408-40A6-BE16-031908899A6C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C327345E-4BE4-4149-92C2-46A871E9F944}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C327345E-4BE4-4149-92C2-46A871E9F944}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C327345E-4BE4-4149-92C2-46A871E9F944}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C327345E-4BE4-4149-92C2-46A871E9F944}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02D29703-5408-40A6-BE16-031908899A6C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02D29703-5408-40A6-BE16-031908899A6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02D29703-5408-40A6-BE16-031908899A6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02D29703-5408-40A6-BE16-031908899A6C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

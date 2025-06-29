@@ -1,0 +1,92 @@
+﻿@using JobSeeker.WebUi.Application.Contracts.WebApi.ProfessionKeys
+@inject IHttpClientFactory HttpClientFactory;
+
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">JobSeeker.WebUi</a>
+    </div>
+</div>
+
+<input type="checkbox" title="Navigation menu" class="navbar-toggler"/>
+
+<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+
+        @if (_loading)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" disabled href="#">
+                    Loading professions...
+                </NavLink>
+            </div>
+        }
+        else if (string.IsNullOrWhiteSpace(_error) == false)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" disabled href="#">
+                    @_error
+                </NavLink>
+            </div>
+        }
+        else if (_menuItems.Count != 0)
+        {
+            foreach (var menuItem in _menuItems)
+            {
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="@($"/vacancies/{menuItem.Id}")">
+                        @menuItem.Title
+                    </NavLink>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" disabled href="#">
+                    Professions not found
+                </NavLink>
+            </div>
+        }
+
+    </nav>
+</div>
+
+@code{
+    private IReadOnlyList<ProfessionKeyDto> _menuItems = [];
+    private bool _loading = true;
+    private string? _error;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender == false) return;
+
+        await UpdateNavMenuAsync();
+    }
+
+    private async Task UpdateNavMenuAsync()
+    {
+        try
+        {
+            var httpClient = HttpClientFactory.CreateClient(ApiName.Base);
+            var response = await httpClient.GetFromJsonAsync<GetAllResponse>("profession-key/all");
+            if (response == null) return;
+
+            _menuItems = response.Items;
+        }
+        catch (Exception e)
+        {
+            _error = e.Message;
+        }
+        finally
+        {
+            _loading = false;
+            StateHasChanged();
+        }
+    }
+
+}
