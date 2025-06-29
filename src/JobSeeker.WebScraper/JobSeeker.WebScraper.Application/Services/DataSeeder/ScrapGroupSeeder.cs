@@ -72,7 +72,29 @@ public class ScrapGroupSeeder(ApplicationDbContext dbContext) : IDataSeeder
                                      "?search_field=name" +
                                      "&search_field=company_name" +
                                      "&search_field=description" +
-                                     "&text=C%23+junior"
+                                     "&excluded_text=преподаватель%2C" +
+                                     "react%2C" +
+                                     "angular%2C" +
+                                     "fullstack%2C" +
+                                     "full-stack%2C" +
+                                     "winforms%2C" +
+                                     "реакт%2C" +
+                                     "devops%2C" +
+                                     "administrator%2C" +
+                                     "delphi%2C" +
+                                     "python%2C" +
+                                     "frontend%2C" +
+                                     "фронтенд%2C" +
+                                     "php%2C" +
+                                     "golang%2C" +
+                                     "qa%2C" +
+                                     "c%2B%2B%2C" + // C++
+                                     "тестировщик%2C" +
+                                     "фулстек%2C" +
+                                     "unreal+engine%2C" +
+                                     "unity%2C" +
+                                     "automated+testing" +
+                                     "&text=C%23+developer"
                     }
                 ]
             }
