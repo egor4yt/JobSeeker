@@ -5,6 +5,7 @@ public class Vacancy
     public int Id { get; set; }
     public string Title { get; set; } = null!;
     public string Description { get; set; } = null!;
+    public string HtmlDescription { get; set; } = null!;
     public int CompanyId { get; set; }
     public int ProfessionKeyId { get; set; }
     public DateTime ActualityDate { get; set; }

@@ -31,7 +31,7 @@ else if (_vacancies.Count != 0)
                         <div class="card-body">
                             <h5 class="card-title">@vacancy.Role</h5>
                             <p class="card-text">@vacancy.ShortDescription</p>
-                            <a href="#" class="btn btn-primary">Read more</a>
+                            <a href="@($"vacancy/{vacancy.VacancyId}")" class="btn btn-primary">Read more</a>
                         </div>
                         <div class="card-footer text-muted">
                             @(vacancy.DaysAgoCreated > 0 ? $"Created {vacancy.DaysAgoCreated} days ago" : "Created today")

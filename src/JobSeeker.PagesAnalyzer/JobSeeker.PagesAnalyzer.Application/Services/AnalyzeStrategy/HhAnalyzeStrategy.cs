@@ -26,8 +26,9 @@ public class HhAnalyzeStrategy(ILogger<HhAnalyzeStrategy> logger, INormalizer no
         {
             response.Role = body.SelectSingleNode("descendant::*[@data-qa=\"vacancy-title\"]")?.InnerText!;
 
-            var description = body.SelectSingleNode("descendant::*[@data-qa=\"vacancy-description\"]")?.InnerText ?? "";
-            response.Description = await normalizer.NormalizeAsync(description, cancellationToken);
+            var descriptionNode = body.SelectSingleNode("descendant::*[@data-qa=\"vacancy-description\"]");
+            response.Description = await normalizer.NormalizeAsync(descriptionNode?.InnerText ?? "", cancellationToken);
+            response.HtmlDescription = await normalizer.NormalizeAsync(descriptionNode?.InnerHtml ?? "", cancellationToken);
 
             response.Company = body.SelectSingleNode("descendant::*[@data-qa=\"vacancy-company-name\"]")?
                 .InnerText.Split(',')

@@ -7,6 +7,7 @@ public class VacancyDto
     public string Role { get; set; } = null!;
     public string? Company { get; set; }
     public string? Description { get; set; }
+    public string? HtmlDescription { get; set; }
     public string? City { get; set; }
 
     public RawVacancy ToRawVacancy(string downloadKey, string sourceDomain, string sourceId,
@@ -21,6 +22,7 @@ public class VacancyDto
         response.DeduplicationCompleted = false;
         response.SourceDomain = sourceDomain;
         response.SourceId = sourceId;
+        response.HtmlDescription = HtmlDescription ?? string.Empty;
 
         response.CreatedAt = DateTime.UtcNow;
         response.OccupationGroup = int.Parse(occupationGroup);

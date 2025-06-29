@@ -19,6 +19,11 @@ public class VacancyConfiguration : IEntityTypeConfiguration<Vacancy>
             .IsRequired();
 
         builder
+            .Property(x => x.HtmlDescription)
+            .HasColumnType("text")
+            .IsRequired();
+
+        builder
             .HasOne(x => x.Company)
             .WithMany(x => x.Vacancies)
             .HasForeignKey(x => x.CompanyId);

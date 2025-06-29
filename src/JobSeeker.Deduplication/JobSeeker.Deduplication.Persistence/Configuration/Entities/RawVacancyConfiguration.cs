@@ -38,6 +38,11 @@ public class RawVacancyConfiguration : IEntityTypeConfiguration<RawVacancy>
             .IsRequired();
 
         builder
+            .Property(x => x.HtmlDescription)
+            .HasColumnType("text")
+            .IsRequired();
+
+        builder
             .Property(x => x.Fingerprint)
             .HasColumnType("varchar(64)")
             .IsRequired();

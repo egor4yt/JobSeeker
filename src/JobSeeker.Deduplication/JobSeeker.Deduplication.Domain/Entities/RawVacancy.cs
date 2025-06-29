@@ -10,6 +10,7 @@ public class RawVacancy
     public string? Location { get; set; }
     public string Title { get; set; } = null!;
     public string Description { get; set; } = null!;
+    public string HtmlDescription { get; set; } = null!;
     public string Company { get; set; } = null!;
     public string SourceDomain { get; set; } = null!;
     public string SourceId { get; set; } = null!;

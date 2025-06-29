@@ -183,6 +183,7 @@ public class DownloadDeduplicatedVacanciesJob(
             var newVacancy = new Vacancy();
             newVacancy.Title = vacancy.Title;
             newVacancy.Description = vacancy.Description;
+            newVacancy.HtmlDescription = vacancy.HtmlDescription;
             newVacancy.ActualityDate = vacancy.CreatedAt;
             newVacancy.ProfessionKeyId = professionKeyId;
             newVacancy.VacancySources = [];
