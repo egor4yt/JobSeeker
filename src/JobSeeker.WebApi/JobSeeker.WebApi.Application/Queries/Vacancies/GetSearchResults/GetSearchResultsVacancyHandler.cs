@@ -10,18 +10,25 @@ public class GetSearchResultsVacancyHandler(ApplicationDbContext applicationDbCo
     {
         var response = new GetSearchResultsVacancyResponse();
 
-        var vacancies = await applicationDbContext.Vacancies
-            .Where(x => x.ProfessionKeyId == request.ProfessionKeyId)
+        var baseQuery = applicationDbContext.Vacancies
+            .Where(x => x.ProfessionKeyId == request.ProfessionKeyId);
+
+        var vacancies = await baseQuery
+            .OrderByDescending(x => x.ActualityDate)
+            .Skip(request.Skip)
+            .Take(request.Take)
             .Select(x => new VacancyDto
             {
                 Role = x.Title,
                 VacancyId = x.Id,
                 CompanyTitle = x.Company.Name,
-                ShortDescription = x.Description.Substring(0, 150) + "..."
+                ShortDescription = x.Description.Substring(0, 150) + "...",
+                DaysAgoCreated = (DateTime.UtcNow - x.ActualityDate).Days
             })
             .ToListAsync(cancellationToken);
 
         response.Vacancies.AddRange(vacancies);
+        response.Total = await baseQuery.CountAsync(cancellationToken);
 
         return response;
     }

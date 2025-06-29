@@ -18,34 +18,75 @@ else if (string.IsNullOrWhiteSpace(_error) == false)
 }
 else if (_vacancies.Count != 0)
 {
-    <div class="container">
-        @foreach (var vacancyChunk in _vacancies.Chunk(2))
-        {
-            <div class="row mb-4">
-                @foreach (var vacancy in vacancyChunk)
-                {
-                    <div class="col">
-                        <div class="card">
-                            <div class="card-header">
-                                @vacancy.CompanyTitle
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title">@vacancy.Role</h5>
-                                <p class="card-text">@vacancy.ShortDescription</p>
-                                <a href="#" class="btn btn-primary">Read more</a>
-                            </div>
+    @foreach (var vacancyChunk in _vacancies.Chunk(2))
+    {
+        <div class="row mb-4">
+            @foreach (var vacancy in vacancyChunk)
+            {
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header">
+                            @vacancy.CompanyTitle
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">@vacancy.Role</h5>
+                            <p class="card-text">@vacancy.ShortDescription</p>
+                            <a href="#" class="btn btn-primary">Read more</a>
+                        </div>
+                        <div class="card-footer text-muted">
+                            @(vacancy.DaysAgoCreated > 0 ? $"Created {vacancy.DaysAgoCreated} days ago" : "Created today")
                         </div>
                     </div>
-                }
-            </div>
-        }
-    </div>
+                </div>
+            }
+        </div>
+    }
 }
 else
 {
     <div>
         <p>Vacancies not found</p>
     </div>
+}
+
+@if (_totalItems != 0)
+{
+    var pagesCount = _totalItems / ItemsPerPage;
+    if (_totalItems % ItemsPerPage > 0) pagesCount += 1;
+
+    const int viewPagesCount = 12;
+
+    var fromPageIndex = Math.Max(0, _currentPageIndex - 4);
+    var toPageIndex = Math.Min(fromPageIndex + viewPagesCount, pagesCount);
+
+    if (pagesCount > 1)
+    {
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                @for (var pageIndex = fromPageIndex; pageIndex < toPageIndex; pageIndex++)
+                {
+                    var currentPageIndex = pageIndex;
+                    
+                    if (_currentPageIndex == currentPageIndex)
+                    {
+                        <li class="page-item active" aria-current="page">
+                            <span class="page-link">@(currentPageIndex + 1)</span>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="page-item">
+                            <a 
+                                @onclick="() => GetVacancies(currentPageIndex)" 
+                                @onclick:preventDefault
+                                class="page-link" 
+                                href="#">@(currentPageIndex + 1)</a>
+                        </li>
+                    }
+                }
+            </ul>
+        </nav>
+    }
 }
 
 
@@ -57,25 +98,32 @@ else
     private IReadOnlyList<VacancyDto> _vacancies = [];
     private bool _loading = true;
     private string? _error;
+    private int _totalItems;
+    private int _currentPageIndex;
+    private const int ItemsPerPage = 30;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender == false) return;
 
-        await GetVacancies(0, 10);
+        await GetVacancies(0);
     }
 
-    private async Task GetVacancies(int skip, int take)
+    private async Task GetVacancies(int pageIndex)
     {
+        _currentPageIndex = pageIndex;
+        var skip = _currentPageIndex * ItemsPerPage;
+
         try
         {
             _loading = true;
 
             var httpClient = HttpClientFactory.CreateClient(ApiName.Base);
-            var response = await httpClient.GetFromJsonAsync<SearchResponse>($"vacancies/search/{ProfessionKeyId}?skip={skip}&take={take}");
+            var response = await httpClient.GetFromJsonAsync<SearchResponse>($"vacancies/search/{ProfessionKeyId}?skip={skip}&take={ItemsPerPage}");
             if (response == null) return;
 
             _vacancies = response.Vacancies;
+            _totalItems = response.Total;
         }
         catch (Exception e)
         {
