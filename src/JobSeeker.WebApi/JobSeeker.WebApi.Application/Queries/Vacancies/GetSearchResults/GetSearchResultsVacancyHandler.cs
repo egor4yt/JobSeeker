@@ -17,7 +17,7 @@ public class GetSearchResultsVacancyHandler(ApplicationDbContext applicationDbCo
                 Role = x.Title,
                 VacancyId = x.Id,
                 CompanyTitle = x.Company.Name,
-                ShortDescription = x.Description.Substring(0, 100) + "..."
+                ShortDescription = x.Description.Substring(0, 150) + "..."
             })
             .ToListAsync(cancellationToken);
 
