@@ -1,0 +1,53 @@
+﻿@page "/vacancy/{vacancyId:int}"
+@using JobSeeker.WebUi.Application.Contracts.WebApi.Vacancies
+@inject IHttpClientFactory HttpClientFactory;
+
+@if (_vacancy != null)
+{
+    <PageTitle>@_vacancy.Role</PageTitle>
+
+    <h1 class="text-body-emphasis">@_vacancy.Role</h1>
+    <p class="fs-5 col-md-8">@_vacancy.Company</p>
+
+    <hr class="mb-5">
+
+    <div>
+        @(new MarkupString(_vacancy.HtmlDescription))
+    </div>
+
+    <hr class="mb-5">
+
+    foreach (var source in _vacancy.Sources)
+    {
+        <h4>@source.Location:</h4>
+        <ul class="list-group mb-5">
+            <li class="list-group-item">@source.Domain</li>
+            @foreach (var url in source.SourceUrl)
+            {
+                <li class="list-group-item"><a href="@url" target="_blank">@url</a></li>
+            }
+        </ul>
+    }
+}
+
+@code{
+    [Parameter]
+    public int VacancyId { get; set; }
+
+    private DetailsResponse? _vacancy;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetVacancy();
+    }
+
+    private async Task GetVacancy()
+    {
+        var httpClient = HttpClientFactory.CreateClient(ApiName.Base);
+        var response = await httpClient.GetFromJsonAsync<DetailsResponse>($"vacancy/{VacancyId}");
+        if (response == null) return;
+
+        _vacancy = response;
+    }
+
+}

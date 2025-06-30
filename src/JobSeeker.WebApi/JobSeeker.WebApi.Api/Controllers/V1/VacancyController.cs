@@ -7,7 +7,7 @@ namespace JobSeeker.WebApi.Api.Controllers.V1;
 /// <summary>
 ///     Vacancies controller
 /// </summary>
-[Route("vacancies")]
+[Route("vacancy")]
 public class VacancyController : ApiControllerBase
 {
     /// <summary>

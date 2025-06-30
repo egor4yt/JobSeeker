@@ -119,7 +119,7 @@ else
             _loading = true;
 
             var httpClient = HttpClientFactory.CreateClient(ApiName.Base);
-            var response = await httpClient.GetFromJsonAsync<SearchResponse>($"vacancies/search/{ProfessionKeyId}?skip={skip}&take={ItemsPerPage}");
+            var response = await httpClient.GetFromJsonAsync<SearchResponse>($"vacancy/search/{ProfessionKeyId}?skip={skip}&take={ItemsPerPage}");
             if (response == null) return;
 
             _vacancies = response.Vacancies;
