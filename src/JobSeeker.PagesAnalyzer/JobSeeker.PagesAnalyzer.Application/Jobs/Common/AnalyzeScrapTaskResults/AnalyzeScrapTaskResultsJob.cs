@@ -19,7 +19,7 @@ public class AnalyzeScrapTaskResultsJob(
     /// <summary>
     ///     Maximum number of object keys that can be processed in parallel in a single chunk
     /// </summary>
-    private const int MaxChunkSize = 5;
+    private const int MaxChunkSize = 1;
     private readonly JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions();
     private readonly SemaphoreSlim _semaphoreSlim = new SemaphoreSlim(MaxChunkSize, MaxChunkSize);
 

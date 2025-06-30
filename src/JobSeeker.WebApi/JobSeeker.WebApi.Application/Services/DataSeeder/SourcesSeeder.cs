@@ -40,6 +40,12 @@ public class SourcesSeeder(ApplicationDbContext dbContext) : IDataSeeder
                 Id = 1,
                 TopLevelDomain = "hh.ru",
                 UrlTemplate = "https://hh.ru/vacancy/{0}"
+            },
+            new Source
+            {
+                Id = 2,
+                TopLevelDomain = "habr.com",
+                UrlTemplate = "https://career.habr.com/vacancies/{0}"
             }
         ];
     }

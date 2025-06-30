@@ -30,6 +30,7 @@ public static class DependencyInjection
         services.AddSingleton<INormalizer, SimpleNormalizer>();
         services.AddSingleton<IAnalyzeStrategyFactory, AnalyzeStrategyFactory>();
         services.AddKeyedScoped<IAnalyzeStrategy, HhAnalyzeStrategy>(HhAnalyzeStrategy.Domain);
+        services.AddKeyedScoped<IAnalyzeStrategy, HabrAnalyzeStrategy>(HabrAnalyzeStrategy.Domain);
     }
 
     private static void AddJobs(IServiceCollection services)

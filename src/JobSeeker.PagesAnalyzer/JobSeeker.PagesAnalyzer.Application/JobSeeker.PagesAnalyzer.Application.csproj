@@ -11,6 +11,7 @@
         <PackageReference Include="Hangfire.Core" Version="1.8.18"/>
         <PackageReference Include="Hangfire.MemoryStorage" Version="1.8.1.1"/>
         <PackageReference Include="HtmlAgilityPack" Version="1.12.1"/>
+        <PackageReference Include="HtmlAgilityPack.CssSelectors.NetCore" Version="1.2.1" />
         <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.4"/>
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.4"/>
     </ItemGroup>

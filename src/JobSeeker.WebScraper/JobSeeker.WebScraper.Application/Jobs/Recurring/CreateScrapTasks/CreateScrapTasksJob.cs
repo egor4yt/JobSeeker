@@ -49,6 +49,7 @@ public class CreateScrapTasksJob(
     private static List<ScrapTask> CreateScrapTasks(ScrapGroup group)
     {
         var response = group.ScrapTaskConfigurations
+            .OrderBy(x => x.Priority)
             .Select(configuration => new ScrapTask
             {
                 ScrapGroupId = group.Id,

@@ -8,32 +8,53 @@ using Microsoft.Playwright;
 namespace JobSeeker.WebScraper.Application.Services.SearchResultsParsing;
 
 /// <summary>
-///     Implements the strategy for parsing search results from the "hh.ru" domain.
+///     Implements the strategy for parsing search results from the "habr.com" domain.
 /// </summary>
-public class HhSearchResultsParsingStrategy(ILogger<ParseSearchResultsLinksJob> logger, PlaywrightFactoryService playwrightFactory) : ISearchResultsParsingStrategy
+public class HabrSearchResultsParsingStrategy(ILogger<ParseSearchResultsLinksJob> logger, PlaywrightFactoryService playwrightFactory) : ISearchResultsParsingStrategy
 {
-    public const string Domain = "hh.ru";
+    public const string Domain = "habr.com";
 
     public async Task<IList<SearchResult>> ParseAsync(ScrapTask scrapTask, CancellationToken cancellationToken)
     {
         var response = new List<SearchResult>();
 
-        await using var session = await playwrightFactory.CreateSessionAsync("hh.ru", cancellationToken);
+        await using var session = await playwrightFactory.CreateSessionAsync("habr.com", cancellationToken);
 
         var page = await session.LoadPageAsync(scrapTask.Entrypoint, cancellationToken);
-        var lastPagerItem = page.Locator("a[data-qa='pager-page']").Last;
+        response.AddRange(await ParsePageResultsAsync(page));
 
-        if (await lastPagerItem.CountAsync() == 0
-            || int.TryParse(await lastPagerItem.TextContentAsync(), out var lastPage) == false)
+        var searchTotalText = await page.Locator("div.search-total").TextContentAsync();
+
+        if (string.IsNullOrWhiteSpace(searchTotalText))
         {
             logger.LogWarning("Can't find last page number {Url}", scrapTask.Entrypoint);
-            return await ParseHeadHunterPageResultsAsync(page);
+            return await ParsePageResultsAsync(page);
         }
 
-        response.AddRange(await ParseHeadHunterPageResultsAsync(page));
+        var lastPage = 0;
+        foreach (var searchTotalTextPart in searchTotalText.Split(' '))
+        {
+            if (int.TryParse(searchTotalTextPart, out var parsedTotalItems))
+            {
+                var itemsPerPage = response.Count;
+                lastPage = parsedTotalItems / itemsPerPage;
+                if (parsedTotalItems % itemsPerPage != 0) lastPage += 1;
+
+                break;
+            }
+        }
+
+        if (lastPage == 0)
+        {
+            logger.LogWarning("Can't find last page number {Url}", scrapTask.Entrypoint);
+            return response;
+        }
+
+        if (lastPage == 1) return response;
+        
         await page.CloseAsync();
 
-        var tasks = Enumerable.Range(1, lastPage - 1).Select(async x =>
+        var tasks = Enumerable.Range(2, lastPage - 1).Select(async x =>
         {
             var url = scrapTask.Entrypoint + $"&page={x}";
             List<SearchResult> results = [];
@@ -42,7 +63,7 @@ public class HhSearchResultsParsingStrategy(ILogger<ParseSearchResultsLinksJob> 
             try
             {
                 currentPage = await session.LoadPageAsync(url, cancellationToken);
-                results = await ParseHeadHunterPageResultsAsync(currentPage);
+                results = await ParsePageResultsAsync(currentPage);
             }
             catch (Exception e)
             {
@@ -62,15 +83,15 @@ public class HhSearchResultsParsingStrategy(ILogger<ParseSearchResultsLinksJob> 
         return response;
     }
 
-    private async Task<List<SearchResult>> ParseHeadHunterPageResultsAsync(IPage page)
+    private async Task<List<SearchResult>> ParsePageResultsAsync(IPage page)
     {
         var response = new List<SearchResult>();
-        var linksLocators = await page.Locator("a[data-qa='serp-item__title']").AllAsync();
+        var linksLocators = await page.Locator("a.vacancy-card__title-link").AllAsync();
 
         foreach (var linkLocator in linksLocators)
         {
             var href = await linkLocator.GetAttributeAsync("href");
-            if (href == null || href.Contains("adsrv.hh.ru"))
+            if (href == null)
             {
                 logger.LogDebug("Found invalid link {InvalidLink}", href);
                 continue;
@@ -79,7 +100,8 @@ public class HhSearchResultsParsingStrategy(ILogger<ParseSearchResultsLinksJob> 
             if (href.Contains('?')) href = href.Split('?')[0];
 
             var newSearchResult = new SearchResult();
-            newSearchResult.ResultLink = href;
+            var currentUrl = new Uri(page.Url);
+            newSearchResult.ResultLink = $"{currentUrl.Scheme}://{currentUrl.Host}{href}";
             response.Add(newSearchResult);
         }
 

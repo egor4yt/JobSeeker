@@ -58,6 +58,7 @@ public static class DependencyInjection
         services.AddSingleton<IProxyFactoryService, LocalProxyFactoryService>();
         services.AddSingleton<ISearchResultsParsingStrategyFactory, SearchResultsParsingStrategyFactory>();
         services.AddKeyedScoped<ISearchResultsParsingStrategy, HhSearchResultsParsingStrategy>(HhSearchResultsParsingStrategy.Domain);
+        services.AddKeyedScoped<ISearchResultsParsingStrategy, HabrSearchResultsParsingStrategy>(HabrSearchResultsParsingStrategy.Domain);
         services.AddScoped<IDataSeeder, ScrapGroupSeeder>();
     }
 

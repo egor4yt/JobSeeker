@@ -68,7 +68,7 @@ public class ScrapGroupSeeder(ApplicationDbContext dbContext) : IDataSeeder
                     new ScrapTaskConfiguration
                     {
                         Priority = 100,
-                        Entrypoint = "https://krasnoyarsk.hh.ru/search/vacancy" +
+                        Entrypoint = "https://hh.ru/search/vacancy" +
                                      "?search_field=name" +
                                      "&search_field=company_name" +
                                      "&search_field=description" +
@@ -95,6 +95,16 @@ public class ScrapGroupSeeder(ApplicationDbContext dbContext) : IDataSeeder
                                      "unity%2C" +
                                      "automated+testing" +
                                      "&text=C%23+developer"
+                    },
+                    new ScrapTaskConfiguration
+                    {
+                        Priority = 99,
+                        Entrypoint = "https://career.habr.com/vacancies" +
+                                     "?q=C%23%20developer" +
+                                     "&s[]=2" +
+                                     "&skills[]=706" +
+                                     "&sort=date" +
+                                     "&type=all"
                     }
                 ]
             }
