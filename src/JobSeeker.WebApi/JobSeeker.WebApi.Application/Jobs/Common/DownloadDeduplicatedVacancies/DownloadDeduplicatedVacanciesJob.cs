@@ -53,6 +53,9 @@ public class DownloadDeduplicatedVacanciesJob(
         var newVacancies = await CreateAndUpdateVacancies(downloadedVacancies, professionKey.Id);
         if (newVacancies.Count != 0) await dbContext.Vacancies.AddRangeAsync(newVacancies, _cancellationToken);
         await dbContext.SaveChangesAsync(_cancellationToken);
+        
+        
+        await Task.WhenAll(downloadedVacancies.Select(x => DeleteObjectAsync(x.ObjectKey)));
     }
 
     private async Task<List<VacancyDto>> GetAllVacancies()
@@ -90,6 +93,7 @@ public class DownloadDeduplicatedVacanciesJob(
 
             response = await JsonSerializer.DeserializeAsync<VacancyDto>(stream, _jsonSerializerOptions, _cancellationToken);
             if (response == null) throw new InvalidOperationException($"Failed to deserialize file '{objectKey}'");
+            response.ObjectKey = objectKey;
 
             logger.LogDebug("Finished downloading {ObjectKey}", objectKey);
         }
@@ -239,6 +243,34 @@ public class DownloadDeduplicatedVacanciesJob(
             };
 
             vacancy.VacancySources.Add(source);
+        }
+    }
+
+
+    /// <summary>
+    ///     Deletes an object from the specified storage bucket
+    /// </summary>
+    /// <param name="objectKey">The key identifying the object to be deleted</param>
+    private async Task DeleteObjectAsync(string objectKey)
+    {
+        await _semaphoreSlim.WaitAsync(_cancellationToken);
+
+        try
+        {
+            var deleteRequest = new DeleteObjectOptions
+            {
+                Bucket = Buckets.Deduplication,
+                Path = objectKey
+            };
+            await objectStorage.DeleteObjectAsync(deleteRequest, _cancellationToken);
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, "Failed to delete file '{ObjectKey}'", objectKey);
+        }
+        finally
+        {
+            _semaphoreSlim.Release();
         }
     }
 }

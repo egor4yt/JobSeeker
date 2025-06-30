@@ -1,3 +1,4 @@
+using JobSeeker.WebApi.Application.Queries.Vacancies.GetDetails;
 using JobSeeker.WebApi.Application.Queries.Vacancies.GetSearchResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,6 +23,23 @@ public class VacancyController : ApiControllerBase
             ProfessionKeyId = professionKeyId,
             Skip = skip,
             Take = take
+        };
+
+        var response = await Mediator.Send(query);
+        return Ok(response);
+    }
+
+    /// <summary>
+    ///     Get vacancy details
+    /// </summary>
+    /// <returns>Vacancy details</returns>
+    [HttpGet("{vacancyId:int}")]
+    [ProducesResponseType(typeof(GetSearchResultsVacancyResponse), StatusCodes.Status200OK)]
+    public async Task<IActionResult> Details([FromRoute] int vacancyId)
+    {
+        var query = new GetDetailsVacanciesRequest
+        {
+            VacancyId = vacancyId
         };
 
         var response = await Mediator.Send(query);
